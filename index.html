@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f6f7f2">
+    <meta name="description" content="So many people. So many things to try. Discover your next skill and build a little collection of things you're good at.">
+    <title>Better than average — Stay curious.</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';</script>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to challenges</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#explore" aria-label="Better than average home"><span class="brand-mark" aria-hidden="true">b/a<span>✳</span></span><span class="brand-name">better than<br>average<span class="brand-dot">.</span></span></a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="#explore" data-nav="explore" class="nav-link active">Explore</a>
+          <a href="#passport" data-nav="passport" class="nav-link">My passport <span id="nav-count" class="nav-count" hidden>0</span></a>
+          <button class="nav-link nav-about" type="button" data-action="about">The idea <span aria-hidden="true">↗</span></button>
+        </nav>
+        <div class="header-actions">
+          <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" data-action="theme"></button>
+          <button class="button button-small header-create" type="button" data-action="create" aria-label="Add a thing"><span aria-hidden="true">＋</span><span class="create-label">Add a thing</span></button>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <section class="hero" id="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="little-star" aria-hidden="true">✳</span> A PROJECT FOR THE CURIOUS</div>
+          <h1 id="hero-title">A little better.<br>At a lot of <span class="word-things">things<svg viewBox="0 0 250 18" aria-hidden="true"><path d="M4 11 Q100 0 245 8 M15 15 Q130 7 237 13"/></svg></span></h1>
+          <p class="hero-description">There are so many people on this planet. So many things to do. How many are you better than average at?</p>
+          <div class="hero-actions"><a class="button button-primary" href="#main">Find my next thing <span aria-hidden="true">↗</span></a><button class="button button-quiet" type="button" data-action="surprise"><span data-icon="shuffle"></span> Surprise me</button></div>
+          <p class="hero-footnote"><span class="status-dot"></span> No account. Just a little curiosity.</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <span class="art-orbit orbit-one"></span><span class="art-orbit orbit-two"></span>
+          <span class="art-caption">THERE’S A WHOLE LOT OF YOU TO DISCOVER</span>
+          <div class="passport-cover"><div class="cover-top"><span>THE VERY UNOFFICIAL</span><span>VOL. 01</span></div><span class="cover-title">GOOD AT<br>MORE THAN<br>YOU THINK.</span><div class="cover-burst">✳</div><div class="cover-bottom"><span>YOUR SKILL PASSPORT</span><span>↗</span></div></div>
+          <div class="floating-stamp stamp-music"><span>♪</span><small>MAKE SOME NOISE</small></div>
+          <div class="floating-stamp stamp-cube"><span>▦</span><small>FIGURE IT OUT</small></div>
+          <div class="art-note">a work in progress.<br>just like the rest of us.<span>↖</span></div>
+          <span class="art-plus plus-one">＋</span><span class="art-plus plus-two">✦</span>
+        </div>
+      </section>
+
+      <section class="passport-strip" aria-label="Your progress">
+        <div class="strip-intro"><div class="strip-icon" data-icon="passport"></div><div><span class="small-eyebrow">YOUR LITTLE BRAGBOOK</span><strong>Every skill starts somewhere.</strong></div></div>
+        <div class="strip-stats"><div class="stat"><span id="benchmark-count">00</span><span>benchmark wins <button type="button" class="tiny-info" aria-label="About benchmark wins" data-action="about">i</button></span></div><div class="stat"><span id="personal-count">00</span><span>personal wins</span></div><div class="stat"><span id="goal-count">00</span><span>on your radar</span></div></div>
+        <button class="strip-link" type="button" data-action="passport">Open passport <span aria-hidden="true">↗</span></button>
+      </section>
+
+      <main id="main" tabindex="-1">
+        <section id="explore-view" aria-labelledby="explore-title">
+          <div class="section-heading"><div><div class="eyebrow">LIFE HAS MORE THAN ONE HIGH SCORE</div><h2 id="explore-title">Find your kind of interesting<span class="accent-period">.</span></h2></div><p class="section-description">A few small challenges.<br>A surprising amount of possibility.</p></div>
+          <div class="explore-toolbar"><div class="category-list" id="categories" role="group" aria-label="Filter by category"></div><label class="search-box"><span data-icon="search"></span><span class="sr-only">Search challenges</span><input id="search" type="search" placeholder="Find a thing…" autocomplete="off"><span class="search-key" aria-hidden="true">⌕</span></label></div>
+          <div class="results-bar"><p id="results-count" aria-live="polite"></p><label class="type-filter"><span class="sr-only">Challenge type</span><select id="type-filter"><option value="all">All challenge types</option><option value="benchmark">Sourced benchmarks</option><option value="personal">Personal challenges</option></select><span aria-hidden="true">⌄</span></label></div>
+          <div id="challenge-grid" class="challenge-grid"></div>
+          <div id="no-results" class="empty-state" hidden><span class="empty-doodle" aria-hidden="true">⌕</span><h3>That thing is still out there.</h3><p>Try another search, or make it a challenge of your own.</p><button type="button" class="button button-primary" data-action="clear-filters">Clear filters</button><button type="button" class="button button-quiet" data-action="create">Create a challenge ↗</button></div>
+          <div class="make-your-own"><div class="make-symbol" aria-hidden="true">✳</div><div><h3>Your thing isn’t a thing here yet?</h3><p>Whistling. Woodworking. Remembering everyone’s coffee order. Make it yours.</p></div><button class="button button-outline" type="button" data-action="create">Add your own <span aria-hidden="true">＋</span></button></div>
+        </section>
+
+        <section id="passport-view" aria-labelledby="passport-title" hidden>
+          <div class="section-heading"><div><div class="eyebrow">THE MANY THINGS THAT MAKE YOU, YOU</div><h2 id="passport-title">Your skill passport<span class="accent-period">.</span></h2></div><p class="section-description">A little collection of<br>“Hey, I can do that.”</p></div>
+          <div class="passport-toolbar"><div class="segmented" role="group" aria-label="Passport view"><button class="selected" type="button" data-passport-tab="goals" aria-pressed="true">On my radar <span id="goals-tab-count">0</span></button><button type="button" data-passport-tab="wins" aria-pressed="false">Collected <span id="wins-tab-count">0</span></button></div><button class="text-button" type="button" data-action="reset">Start fresh <span data-icon="rotate"></span></button></div>
+          <div id="passport-grid" class="challenge-grid"></div>
+          <div id="passport-empty" class="empty-state"></div>
+        </section>
+      </main>
+
+      <section class="closing-note"><span aria-hidden="true">✳</span><p>You don’t have to be the best at everything.<br><strong>There’s a lot of joy in being a little good at something.</strong></p><span class="closing-scribble" aria-hidden="true">↗</span></section>
+      <footer class="site-footer"><a class="footer-brand" href="#explore">better than average<span>✳</span></a><p>A small experiment in staying curious.</p><button type="button" class="playground-label" data-action="about"><span class="status-dot"></span> Playground · resets on refresh <span aria-hidden="true">↗</span></button></footer>
+    </div>
+
+    <dialog id="challenge-dialog" class="app-dialog detail-dialog" aria-labelledby="detail-title"><div id="detail-content"></div></dialog>
+    <dialog id="create-dialog" class="app-dialog create-dialog" aria-labelledby="create-title">
+      <div class="dialog-topline"><span class="small-eyebrow">A THING OF YOUR OWN</span><button class="icon-button" type="button" data-close aria-label="Close create challenge" data-icon="close"></button></div>
+      <h2 id="create-title">What’s your thing?</h2><p class="dialog-lead">Make a clear little target. It doesn’t have to impress anyone else.</p>
+      <form id="create-form"><input type="hidden" name="originalId"><label>Give it a name<input name="title" required maxlength="55" placeholder="The perfect paper aeroplane"></label><div class="form-columns"><label>Category<select name="category" id="create-category"></select></label><label>Success means<select name="direction"><option value="at-least">At least…</option><option value="under">Less than…</option></select></label></div><div class="form-columns"><label>Target<input name="target" type="number" step="any" min="0.01" required placeholder="10"></label><label>Unit<input name="unit" required maxlength="22" placeholder="metres"></label></div><label>What counts?<textarea name="instructions" rows="3" required maxlength="400" placeholder="A clear, repeatable way to try it. Keep it simple."></textarea></label><p class="form-note"><span data-icon="spark"></span> Your creations are personal challenges. No population claims required.</p><button class="button button-primary full-width" type="submit">Make it a thing <span aria-hidden="true">↗</span></button></form>
+    </dialog>
+    <dialog id="about-dialog" class="app-dialog about-dialog" aria-labelledby="about-title"><div class="dialog-topline"><span class="small-eyebrow">A VERY UNOFFICIAL ADVENTURE</span><button type="button" class="icon-button" data-close data-icon="close" aria-label="Close the idea"></button></div><span class="about-star" aria-hidden="true">✳</span><h2 id="about-title">So many things.<br>So much possibility.</h2><p class="dialog-lead">This is a playground for collecting real-world skills, finding a new rabbit hole, and giving yourself a little credit.</p><div class="about-step"><span>01</span><div><h3>Find a thing</h3><p>Pick something interesting. Save it to your radar, or jump straight in.</p></div></div><div class="about-step"><span>02</span><div><h3>Give it a go</h3><p>Record a result, a target date, and an optional little receipt.</p></div></div><div class="about-step"><span>03</span><div><h3>Collect the good stuff</h3><p>A sourced benchmark compares with a named study. A personal win celebrates a target you chose. Both deserve a little cheer.</p></div></div><div class="honesty-note"><strong>A note on “average”</strong><p>Most challenges here are playful personal targets. The typing benchmark cites a specific 2018 study, with its method and population. A result you enter is self-reported; evidence attached isn’t independent verification.</p></div><p class="form-note">This first version has no account or saved profile. Changes stay in this tab and reset on refresh.</p><button type="button" class="button button-primary full-width" data-close>Let’s find a thing <span aria-hidden="true">↗</span></button></dialog>
+    <dialog id="reset-dialog" class="app-dialog small-dialog" aria-labelledby="reset-title"><div class="dialog-topline"><span class="small-eyebrow">A CLEAN PAGE</span><button type="button" class="icon-button" data-close data-icon="close" aria-label="Close reset"></button></div><h2 id="reset-title">A fresh little start?</h2><p class="dialog-lead">Clear this playground’s attempts, goals, and custom challenges.</p><div class="button-row"><button type="button" class="button button-outline" data-close>Keep exploring</button><button type="button" class="button button-primary" data-action="confirm-reset">Start fresh ↗</button></div></dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="celebration" class="celebration" aria-hidden="true"></div>
+    <noscript><p class="noscript-note">Turn on JavaScript to explore the challenges and play with your skill passport.</p></noscript>
+  </body>
+</html>
