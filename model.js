@@ -54,5 +54,5 @@ export function makeCustomChallenge(input, originalId='') {
   const unit=String(input.unit || '').trim().slice(0,22);
   const instructions=String(input.instructions || '').trim().slice(0,400);
   if (!title || !unit || !instructions || !Number.isFinite(target) || target<=0) throw new Error('Add a name, a positive target, a unit, and a clear rule.');
-  return {id:originalId || `custom-${globalThis.crypto.randomUUID()}`, title, target, unit, instructions, category:input.category, direction:input.direction==='under'?'under':'at-least', type:'personal', icon:'spark', time:'Your pace', description:'A thing of your own. Your rules, your little adventure.', custom:true};
+  return {id:originalId || `custom-${globalThis.crypto.randomUUID()}`, title, target, unit, instructions, category:input.category, direction:input.direction==='under'?'under':'at-least', type:'personal', icon:'flag', time:'', description:instructions.length>110?`${instructions.slice(0,107).trimEnd()}…`:instructions, custom:true};
 }

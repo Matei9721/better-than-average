@@ -6,7 +6,9 @@ const $$ = (selector, scope=document) => [...scope.querySelectorAll(selector)];
 const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
 const paths = {
   spark:'<path d="M12 2v20M2 12h20M5 5l14 14M5 19 19 5"/>',
-  arrow:'<path d="M6 18 18 6M6 6h12v12"/>',
+  chevron:'<path d="m9 5 7 7-7 7"/>',
+  grid:'<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/><rect x="3" y="15" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/>',
+  flag:'<path d="M5 22V3m0 0c5-4 9 4 14 0v11c-5 4-9-4-14 0"/>',
   close:'<path d="m6 6 12 12M6 18 18 6"/>',
   search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
   shuffle:'<path d="M3 6h3c5 0 7 12 12 12h3M3 18h3c2 0 4-3 6-6s4-6 6-6h3m-3-3 3 3-3 3m0 6 3 3-3 3"/>',
@@ -93,17 +95,17 @@ function card(challenge, order=0) {
   const latest=record?.attempts.at(-1);
   return `<article class="challenge-card" data-category="${escape(challenge.category)}" style="--card-order:${Math.min(order,5)}">
     <div class="card-top"><span class="challenge-icon">${icon(challenge.icon)}</span><button type="button" class="bookmark-button" data-goal="${escape(challenge.id)}" aria-label="${saved?'Remove':'Save'} ${escape(challenge.title)} ${saved?'from':'to'} goals" aria-pressed="${saved}">${icon(record?.won?'check':'bookmark')}</button></div>
-    <div class="card-labels"><span class="category-name">${categoryName(challenge.category)}</span>${record?.won?'<span class="card-tag">Collected ✦</span>':challenge.tag?`<span class="card-tag">${escape(challenge.tag)}</span>`:''}</div>
+    <div class="card-labels"><span class="category-name">${categoryName(challenge.category)}</span>${record?.won?'<span class="card-tag">Completed</span>':challenge.tag?`<span class="card-tag">${escape(challenge.tag)}</span>`:''}</div>
     <h3 class="card-title"><button type="button" data-open="${escape(challenge.id)}">${escape(challenge.title)}</button></h3>
     <p class="card-description">${escape(challenge.description)}</p>
-    <div class="card-bottom"><div><div class="card-target">${escape(targetLabel(challenge))}</div><div class="card-type">${icon(challenge.type==='benchmark'?'study':'spark')}${challenge.type==='benchmark'?'Sourced study mean':'Personal target'} <span aria-hidden="true">·</span> ${escape(challenge.time)}</div></div><button type="button" class="card-open" data-open="${escape(challenge.id)}" aria-label="Open ${escape(challenge.title)}">${icon('arrow')}</button></div>
-    ${latest||record?.deadline?`<div class="card-record">${icon(record?.won?'check':'clock')}<span>${record?.won?'Achieved · self-reported':latest?`Last try: ${escape(latest.value)} ${escape(challenge.unit)}`:'On your radar'}${record?.deadline?` · Aim for ${escape(formatDate(record.deadline))}`:''}</span></div>`:''}
+    <div class="card-bottom"><div><div class="card-target">${escape(targetLabel(challenge))}</div><div class="card-type">${challenge.type==='benchmark'?'Study comparison':'Personal target'}${challenge.time?` <span aria-hidden="true">·</span> ${escape(challenge.time)}`:''}</div></div><button type="button" class="card-open" data-open="${escape(challenge.id)}" aria-label="Open ${escape(challenge.title)}">${icon('chevron')}</button></div>
+    ${latest||record?.deadline?`<div class="card-record">${icon(record?.won?'check':'clock')}<span>${record?.won?'Completed · self-reported':latest?`Last result: ${escape(latest.value)} ${escape(challenge.unit)}`:'Saved to goals'}${record?.deadline?` · Target: ${escape(formatDate(record.deadline))}`:''}</span></div>`:''}
   </article>`;
 }
 function formatDate(value) {return new Date(value.length===10?`${value}T12:00:00`:value).toLocaleDateString(undefined,{day:'numeric',month:'short'});}
 function renderExplore() {
   const items=filterChallenges(state.challenges,filters);
-  $('#results-count').innerHTML=`<strong>${items.length}</strong> ${items.length===1?'thing':'things'} worth a try`;
+  $('#results-count').innerHTML=`<strong>${items.length}</strong> ${items.length===1?'challenge':'challenges'}`;
   $('#challenge-grid').innerHTML=items.map((item,index)=>card(item,index)).join('');
   $('#no-results').hidden=items.length>0;
 }
@@ -115,7 +117,7 @@ function renderPassport() {
   const items=state.challenges.filter(item=>{const record=state.records.get(item.id);return passportTab==='wins'?record?.won:record?.goal&&!record?.won;});
   $('#passport-grid').innerHTML=items.map((item,index)=>card(item,index)).join('');
   const empty=$('#passport-empty');empty.hidden=items.length>0;
-  if(!items.length)empty.innerHTML=`<span class="empty-doodle" aria-hidden="true">${passportTab==='wins'?'✳':'↗'}</span><h3>${passportTab==='wins'?'Your first stamp is out there.':'Leave room for a little curiosity.'}</h3><p>${passportTab==='wins'?'Try a challenge and record a result. Your collection will grow one small win at a time.':'Save a challenge that catches your eye. It’ll be right here when you’re ready to give it a go.'}</p><button type="button" class="button button-primary" data-action="explore">Find my next thing ↗</button>`;
+  if(!items.length)empty.innerHTML=`<h3>${passportTab==='wins'?'No completed challenges yet':'No saved goals yet'}</h3><p>${passportTab==='wins'?'Record a passing result to add a challenge to your collection.':'Save a challenge to find it here.'}</p><button type="button" class="button button-primary" data-action="explore">Explore challenges</button>`;
 }
 function renderStats() {
   const totals=counts(state);
@@ -159,24 +161,24 @@ function renderDetail() {
   const best=record?.attempts.length ? (challenge.direction==='under'?Math.min:Math.max)(...record.attempts.map(attempt=>attempt.value)) : null;
   $('#detail-content').innerHTML=`
     <div data-category="${escape(challenge.category)}">
-      <div class="dialog-topline"><div class="dialog-category"><span class="challenge-icon">${icon(challenge.icon)}</span><span class="small-eyebrow">${categoryName(challenge.category)} · ${escape(challenge.time)}</span></div><button class="icon-button" type="button" data-close aria-label="Close challenge">${icon('close')}</button></div>
-      <h2 id="detail-title">${escape(challenge.title)}</h2><p class="dialog-lead">${escape(challenge.description)}</p>
-      <div class="detail-meta"><span class="detail-badge">${icon(challenge.type==='benchmark'?'study':'spark')}${challenge.type==='benchmark'?'Sourced study mean':'Personal target'}</span><span>${challenge.type==='benchmark'?'Compared with named study participants':'A playful goal, chosen for this playground'}</span></div>
-      <div class="detail-target"><div><div class="small-eyebrow">THE LITTLE CHALLENGE</div><div class="target-value">${escape(targetLabel(challenge))}</div></div><span class="target-star" aria-hidden="true">✳</span></div>
+      <div class="dialog-topline"><div class="dialog-category"><span class="challenge-icon">${icon(challenge.icon)}</span><span class="small-eyebrow">${categoryName(challenge.category)}${challenge.time?` · ${escape(challenge.time)}`:''}</span></div><button class="icon-button" type="button" data-close aria-label="Close challenge">${icon('close')}</button></div>
+      <h2 id="detail-title">${escape(challenge.title)}</h2>${challenge.custom?'':`<p class="dialog-lead">${escape(challenge.description)}</p>`}
+      <div class="detail-meta"><span class="detail-badge">${challenge.type==='benchmark'?'Study comparison':'Personal target'}</span></div>
+      <div class="detail-target"><div><div class="small-eyebrow">TARGET</div><div class="target-value">${escape(targetLabel(challenge))}</div></div></div>
       <p class="instructions">${escape(challenge.instructions)}</p>
-      ${challenge.source?`<details class="source-details" open><summary>Where does “average” come from?</summary><p><strong>${escape(challenge.source.title)} · ${challenge.source.year}</strong><br>${escape(challenge.source.metric)}. ${escape(challenge.source.population)}</p><a href="${escape(challenge.source.url)}" target="_blank" rel="noopener noreferrer">Read the research and method ↗</a></details>`:''}
-      <div class="detail-actions"><button class="button button-outline" type="button" data-detail-goal="${escape(challenge.id)}" aria-pressed="${Boolean(record?.goal)}">${icon(record?.goal?'check':'bookmark')}<span>${record?.goal?'Saved to my radar':'Save to my radar'}</span></button><button class="text-button" type="button" data-customize="${escape(challenge.id)}">${challenge.custom?'Edit my challenge':'Make it mine'} ${icon('arrow')}</button></div>
-      ${challenge.game==='reaction'?`<section class="reaction-game" aria-label="Five-round reaction test"><div class="reaction-heading"><span>THE REFLEX MINI GAME</span><span id="reaction-round">5 rounds · average result</span></div><button id="reaction-pad" class="reaction-pad" data-phase="idle" type="button"><strong>Ready when you are.</strong><span>Tap to begin. Then wait for the green.</span></button><div id="reaction-result" class="reaction-result" hidden><p id="reaction-score"></p><button class="button button-outline" type="button" data-action="use-reaction">Use this result ↗</button></div><p class="reaction-help">You can also use Space or Enter. This is a device-dependent game, with a personal target.</p><span id="reaction-announcement" class="sr-only" role="status" aria-live="polite"></span></section>`:''}
-      ${record?.won?`<div class="achieved-message"><strong>✦ Another string to your bow.</strong><p>${escape(best)} ${escape(challenge.unit)} · Achieved ${formatDate(record.achieved)} · Self-reported${challenge.type==='benchmark'?'<br>Above this study’s mean. No world ranking implied.':''}</p></div>`:''}
-      <form id="attempt-form"><div class="form-heading"><h3>${record?.attempts.length?'Give it another go':'Give yourself a little credit'}</h3><span>Every attempt counts.</span></div><div class="form-columns"><label>Your result (${escape(challenge.unit)})<input id="attempt-value" name="value" type="number" min="0" step="any" required inputmode="decimal" placeholder="${escape(challenge.target)}" ${latest?`value="${escape(latest.value)}"`:''}></label><label>Aim for <span class="form-optional">optional</span><input name="deadline" type="date" value="${escape(record?.deadline)}"></label></div><details class="proof-fields"><summary>A little note or proof? <span class="form-optional">Optional</span></summary><label>A note for future you<textarea name="note" maxlength="400" rows="2" placeholder="What went well? What would you try next time?"></textarea></label><label>Evidence link<input name="proof" type="url" maxlength="800" placeholder="https://…"></label><p class="form-note">Links and notes stay in this tab. Nothing is uploaded or independently verified.</p></details><p class="form-error" id="attempt-error" role="alert" hidden></p><button class="button button-primary full-width" type="submit">Save my attempt <span aria-hidden="true">↗</span></button></form>
-      ${record?.attempts.length?`<section class="attempt-history"><h3>Your little trail of progress</h3>${[...record.attempts].reverse().slice(0,5).map(attempt=>`<div class="attempt-item"><div><strong>${escape(attempt.value)} ${escape(challenge.unit)}</strong>${attempt.note?`<p>${escape(attempt.note)}</p>`:''}${attempt.proof?`<a href="${escape(attempt.proof)}" target="_blank" rel="noopener noreferrer">View evidence ↗</a>`:''}</div><time datetime="${attempt.date}">${formatDate(attempt.date)}</time></div>`).join('')}</section>`:''}
+      ${challenge.source?`<details class="source-details" open><summary>Where does “average” come from?</summary><p><strong>${escape(challenge.source.title)} · ${challenge.source.year}</strong><br>${escape(challenge.source.metric)}. ${escape(challenge.source.population)}</p>${challenge.source.note?`<p>${escape(challenge.source.note)}</p>`:''}<a href="${escape(challenge.source.url)}" target="_blank" rel="noopener noreferrer">Read the research and method ↗</a></details>`:''}
+      <div class="detail-actions"><button class="button button-outline" type="button" data-detail-goal="${escape(challenge.id)}" aria-pressed="${Boolean(record?.goal)}">${icon(record?.goal?'check':'bookmark')}<span>${record?.goal?'Saved to goals':'Save to goals'}</span></button><button class="text-button" type="button" data-customize="${escape(challenge.id)}">${challenge.custom?'Edit challenge':'Customize'} ${icon('chevron')}</button></div>
+      ${challenge.game==='reaction'?`<section class="reaction-game" aria-label="Five-round reaction test"><div class="reaction-heading"><span>REACTION TEST</span><span id="reaction-round">5 rounds</span></div><button id="reaction-pad" class="reaction-pad" data-phase="idle" type="button"><strong>Start test</strong><span>Wait for green, then click or tap.</span></button><div id="reaction-result" class="reaction-result" hidden><p id="reaction-score"></p><button class="button button-outline" type="button" data-action="use-reaction">Use result</button></div><p class="reaction-help">Space or Enter also work.</p><span id="reaction-announcement" class="sr-only" role="status" aria-live="polite"></span></section>`:''}
+      ${record?.won?`<div class="achieved-message"><strong>Challenge completed</strong><p>${escape(best)} ${escape(challenge.unit)} · ${formatDate(record.achieved)} · Self-reported${challenge.type==='benchmark'?'<br>Above this study’s mean.':''}</p></div>`:''}
+      <form id="attempt-form"><div class="form-heading"><h3>Record an attempt</h3></div><div class="form-columns"><label>Your result (${escape(challenge.unit)})<input id="attempt-value" name="value" type="number" min="0" step="any" required inputmode="decimal" placeholder="${escape(challenge.target)}" ${latest?`value="${escape(latest.value)}"`:''}></label><label>Target date <span class="form-optional">optional</span><input name="deadline" type="date" value="${escape(record?.deadline)}"></label></div><details class="proof-fields"><summary>Notes and evidence <span class="form-optional">optional</span></summary><label>Notes<textarea name="note" maxlength="400" rows="2" placeholder="Add a note about your attempt."></textarea></label><label>Evidence link<input name="proof" type="url" maxlength="800" placeholder="https://…"></label></details><p class="form-error" id="attempt-error" role="alert" hidden></p><button class="button button-primary full-width" type="submit">Save attempt</button></form>
+      ${record?.attempts.length?`<section class="attempt-history"><h3>Recent attempts</h3>${[...record.attempts].reverse().slice(0,5).map(attempt=>`<div class="attempt-item"><div><strong>${escape(attempt.value)} ${escape(challenge.unit)}</strong>${attempt.note?`<p>${escape(attempt.note)}</p>`:''}${attempt.proof?`<a href="${escape(attempt.proof)}" target="_blank" rel="noopener noreferrer">View evidence ↗</a>`:''}</div><time datetime="${attempt.date}">${formatDate(attempt.date)}</time></div>`).join('')}</section>`:''}
     </div>`;
   const deadlineLabel=$('input[name="deadline"]',detailDialog)?.closest('label');
   if(deadlineLabel) {
     const dateInput=$('input',deadlineLabel);
     deadlineLabel.replaceChildren();
     const labelText=document.createElement('span');
-    labelText.innerHTML='Aim for <span class="form-optional">optional</span>';
+    labelText.innerHTML='Target date <span class="form-optional">optional</span>';
     deadlineLabel.append(labelText,dateInput);
   }
   if(record?.won) {
@@ -193,12 +195,14 @@ function openCreate(id='') {
   const original=state.challenges.find(item=>item.id===id);
   const form=$('#create-form');form.reset();
   form.elements.originalId.value=original?.custom?original.id:'';
-  $('#create-title').textContent=original?.custom?'A little fine-tuning.':original?'Make it your own.':'What’s your thing?';
+  $('#create-title').textContent=original?.custom?'Edit challenge':original?'Customize challenge':'Create a challenge';
+  $('#create-submit').textContent=original?.custom?'Save changes':'Create challenge';
+  $('#create-type-note').hidden=original?.type!=='benchmark';
   if(original){for(const key of ['title','category','target','unit','instructions'])form.elements[key].value=original[key];form.elements.direction.value=original.direction==='under'?'under':'at-least';}
   $('#edit-notice')?.remove();
   if(original?.custom && state.records.get(original.id)?.attempts.length) {
     const notice=document.createElement('p');notice.id='edit-notice';notice.className='honesty-note edit-notice';
-    notice.textContent='Saving new rules clears this challenge’s old attempts and stamp. The new target starts fresh.';
+    notice.textContent='Changing the rules clears this challenge’s attempts and achievement.';
     form.prepend(notice);
   }
   closeDialog(detailDialog);openDialog(createDialog);
@@ -217,31 +221,31 @@ function initGame() {
   pad.addEventListener('click',()=>{
     if(!game)return;
     if(game.phase==='waiting'){
-      clearTimeout(game.timer);game.phase='idle';paintGame('A little too eager.','No rush. Tap to try this round again.','idle');return;
+      clearTimeout(game.timer);game.phase='idle';paintGame('Too soon','Click to restart this round.','idle');return;
     }
     if(game.phase==='ready'){
       const elapsed=Math.round(performance.now()-game.readyAt);
       game.times.push(elapsed);
       if(game.times.length===5){
         game.phase='done';game.average=Math.round(game.times.reduce((total,value)=>total+value,0)/5);
-        paintGame(`${game.average} ms`,'Your five-round average. Nicely done.','result');
+        paintGame(`${game.average} ms`,'Average of five rounds.','result');
         $('#reaction-round').textContent='5 / 5 rounds';$('#reaction-score').textContent=`${game.times.join(' · ')} ms`;$('#reaction-result').hidden=false;
-      }else{game.phase='idle';paintGame(`${elapsed} ms`,'Tap for your next round.','result');$('#reaction-round').textContent=`${game.times.length} / 5 rounds`;}
+      }else{game.phase='idle';paintGame(`${elapsed} ms`,'Click for the next round.','result');$('#reaction-round').textContent=`${game.times.length} / 5 rounds`;}
       return;
     }
     if(game.phase==='done'){
-      game.times=[];$('#reaction-result').hidden=true;$('#reaction-round').textContent='5 rounds · average result';
+      game.times=[];$('#reaction-result').hidden=true;$('#reaction-round').textContent='5 rounds';
     }
-    game.phase='waiting';paintGame('Wait for the green…','Then tap as quickly as you can.','waiting');
+    game.phase='waiting';paintGame('Wait for green','Don’t click yet.','waiting');
     game.timer=setTimeout(()=>{
       if(!game||!detailDialog.open)return;
-      game.phase='ready';paintGame('Now!','Tap!','ready');game.readyAt=performance.now();
+      game.phase='ready';paintGame('Now!','Click or tap.','ready');game.readyAt=performance.now();
     },1400+Math.random()*2200);
   });
 }
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden&&game&&['waiting','ready'].includes(game.phase)){
-    clearTimeout(game.timer);game.phase='idle';paintGame('Welcome back.','Tap to restart this round.','idle');
+    clearTimeout(game.timer);game.phase='idle';paintGame('Round paused','Click to restart this round.','idle');
   }
 });
 
@@ -255,11 +259,11 @@ document.addEventListener('click',event=>{
   const open=event.target.closest('[data-open]');
   if(open){openChallenge(open.dataset.open);return;}
   const goal=event.target.closest('[data-goal]');
-  if(goal){const saved=toggleGoal(state,goal.dataset.goal);renderAll();toast(saved?'A new thing on your radar.':'Taken off your radar. Always here to rediscover.');return;}
+  if(goal){const saved=toggleGoal(state,goal.dataset.goal);renderAll();toast(saved?'Saved to goals.':'Removed from goals.');return;}
   const detailGoal=event.target.closest('[data-detail-goal]');
-  if(detailGoal){const saved=toggleGoal(state,detailGoal.dataset.detailGoal);detailGoal.setAttribute('aria-pressed',String(saved));detailGoal.innerHTML=`${icon(saved?'check':'bookmark')}<span>${saved?'Saved to my radar':'Save to my radar'}</span>`;renderAll();toast(saved?'A new thing on your radar.':'Taken off your radar.');return;}
+  if(detailGoal){const saved=toggleGoal(state,detailGoal.dataset.detailGoal);detailGoal.setAttribute('aria-pressed',String(saved));detailGoal.innerHTML=`${icon(saved?'check':'bookmark')}<span>${saved?'Saved to goals':'Save to goals'}</span>`;renderAll();toast(saved?'Saved to goals.':'Removed from goals.');return;}
   const undo=event.target.closest('[data-undo]');
-  if(undo){const record=state.records.get(undo.dataset.undo);record.won=false;record.achieved=null;renderAll();renderDetail();toast('Stamp removed. Your attempts are still here.');return;}
+  if(undo){const record=state.records.get(undo.dataset.undo);record.won=false;record.achieved=null;renderAll();renderDetail();toast('Achievement removed. Attempts kept.');return;}
   const category=event.target.closest('[data-category-filter]');
   if(category){filters.category=category.dataset.categoryFilter;renderCategories();renderExplore();return;}
   const passportButton=event.target.closest('[data-passport-tab]');
@@ -279,9 +283,9 @@ document.addEventListener('click',event=>{
   else if(action==='clear-filters'){filters={category:'all',query:'',type:'all'};$('#search').value='';$('#type-filter').value='all';renderCategories();renderExplore();}
   else if(action==='reset')openDialog($('#reset-dialog'));
   else if(action==='confirm-reset'){
-    state=createState(initialChallenges);filters={category:'all',query:'',type:'all'};passportTab='goals';$('#search').value='';$('#type-filter').value='all';renderCategories();renderAll();closeDialog($('#reset-dialog'));navigate('explore');toast('A clean page. A world of possibilities.');
+    state=createState(initialChallenges);filters={category:'all',query:'',type:'all'};passportTab='goals';$('#search').value='';$('#type-filter').value='all';renderCategories();renderAll();closeDialog($('#reset-dialog'));navigate('explore');toast('Progress reset.');
   }
-  else if(action==='use-reaction'&&game?.average){$('#attempt-value').value=game.average;$('#attempt-value').focus();toast('Result added. Save your attempt to collect it.');}
+  else if(action==='use-reaction'&&game?.average){$('#attempt-value').value=game.average;$('#attempt-value').focus();toast('Result added to your attempt.');}
 });
 $('#search').addEventListener('input',event=>{filters.query=event.target.value;renderExplore();});
 $('#type-filter').addEventListener('change',event=>{filters.type=event.target.value;renderExplore();});
@@ -293,8 +297,8 @@ document.addEventListener('submit',event=>{
       if(data.proof){const url=new URL(data.proof);if(!['https:','http:'].includes(url.protocol))throw new Error('Use an https:// or http:// link for evidence.');data.proof=url.href;}
       const result=recordAttempt(state,currentId,data);renderAll();renderDetail();
       detailDialog.scrollTop=0;$('.dialog-topline button',detailDialog).focus({preventScroll:true});
-      if(result.newWin){celebrate();toast(state.challenges.find(item=>item.id===currentId).type==='benchmark'?'Above the study mean. A benchmark win!':'A new stamp in your passport. Nicely done!');}
-      else toast(result.passed?'Another good result in the books.':'Attempt saved. That’s how things begin.');
+      if(result.newWin){celebrate();toast('Challenge completed.');}
+      else toast('Attempt saved.');
     }catch(error){const message=$('#attempt-error');message.textContent=error.message;message.hidden=false;}
   }else if(event.target.id==='create-form') {
     event.preventDefault();const form=event.target;
@@ -304,7 +308,7 @@ document.addEventListener('submit',event=>{
       const item=makeCustomChallenge(data,data.originalId);
       if(data.originalId){const index=state.challenges.findIndex(challenge=>challenge.id===data.originalId);state.challenges[index]=item;state.records.delete(item.id);}
       else state.challenges.unshift(item);
-      toggleGoal(state,item.id);closeDialog(createDialog);renderAll();openChallenge(item.id);toast(data.originalId?'Challenge updated. A fresh target to aim for.':'Officially a thing. Added to your radar.');
+      toggleGoal(state,item.id);closeDialog(createDialog);renderAll();openChallenge(item.id);toast(data.originalId?'Challenge updated.':'Challenge created.');
     }catch(error){toast(error.message);}
   }
 });
