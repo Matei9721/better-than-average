@@ -1,5 +1,5 @@
 import {categories, challenges as initialChallenges} from './data.js';
-import {createState, counts, filterChallenges, makeCustomChallenge, recordAttempt, targetLabel, toggleGoal} from './model.js';
+import {createState, counts, filterChallenges, makeCustomChallenge, recordAttempt, resultLabel, targetLabel, toggleGoal} from './model.js';
 
 const $ = (selector, scope=document) => scope.querySelector(selector);
 const $$ = (selector, scope=document) => [...scope.querySelectorAll(selector)];
@@ -19,6 +19,8 @@ const paths = {
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   study:'<path d="M4 3h12a2 2 0 0 1 2 2v15H6a2 2 0 0 1-2-2Zm0 14h14M8 7h6M8 11h4M21 4v13"/>',
   passport:'<rect x="5" y="2" width="15" height="20" rx="2"/><path d="M8 2v20M12 18h5"/><circle cx="14" cy="9" r="3"/><path d="M11 9h6m-3-3a7 7 0 0 1 0 6m0-6a7 7 0 0 0 0 6"/>',
+  barbell:'<path d="M6 12h12M3 8v8m3-11v14M18 5v14m3-11v8M1 12h2m18 0h2"/>',
+  crosshair:'<circle cx="12" cy="12" r="7"/><path d="M12 2v5m0 10v5M2 12h5m10 0h5"/>',
   rotate:'<path d="M3 10a9 9 0 1 1 1 7M3 4v6h6"/>',
   move:'<path d="m5 17 4-4 3 1 3-7 4 3M4 21l5-3 3 2 5-5M9 5l3 2 3-1"/><circle cx="17" cy="3" r="1.5"/>',
   brain:'<path d="M9 18a3 3 0 0 1-5-2 4 4 0 0 1-1-7 4 4 0 0 1 6-5 3 3 0 0 1 3-2v20a4 4 0 0 1-3-4Zm6 0a3 3 0 0 0 5-2 4 4 0 0 0 1-7 4 4 0 0 0-6-5 3 3 0 0 0-3-2M8 8a4 4 0 0 0 4 4m4-4a4 4 0 0 1-4 4M7 15h2m6 0h2"/>',
@@ -53,7 +55,7 @@ const categoryName=id=>categories.find(category=>category.id===id)?.name || 'Per
 let state=createState(initialChallenges);
 let view='explore', passportTab='goals';
 let filters={category:'all', query:'', type:'all'};
-let currentId=null, toastTimer=null, game=null, manualTheme=false;
+let currentId=null, toastTimer=null, game=null, manualTheme=false, createTemplate=null;
 const detailDialog=$('#challenge-dialog');
 const createDialog=$('#create-dialog');
 
@@ -89,17 +91,27 @@ function celebrate() {
 function renderCategories() {
   $('#categories').innerHTML=categories.map(category=>`<button class="category-chip" type="button" data-category-filter="${category.id}" aria-pressed="${category.id===filters.category}">${icon(category.icon)}${category.name}</button>`).join('');
 }
+const comparisonKind=challenge=>challenge.type!=='benchmark'?'personal':challenge.source?.kind==='rank'?'rank':'study';
+const comparisonLabel=challenge=>({study:'Study based',rank:'Rank data',personal:'Personal target'}[comparisonKind(challenge)]);
+function resultInput(challenge,latest) {
+  if(challenge.resultOptions)return `<select id="attempt-value" name="value" required><option value="">Choose your rank</option>${challenge.resultOptions.map(option=>`<option value="${option.value}" ${latest?.value===option.value?'selected':''}>${escape(option.label)}</option>`).join('')}</select>`;
+  const duration=challenge.input==='duration';
+  const value=latest?(duration?resultLabel(challenge,latest.value):latest.value):'';
+  return `<input id="attempt-value" name="value" type="${duration?'text':'number'}" ${duration?'':`min="0" step="${challenge.integer?'1':'any'}" inputmode="${challenge.integer?'numeric':'decimal'}" ${challenge.max!==undefined?`max="${challenge.max}"`:''}`} required placeholder="${escape(duration?resultLabel(challenge,challenge.target):challenge.target)}" value="${escape(value)}">`;
+}
 function card(challenge) {
   const record=state.records.get(challenge.id);
   const saved=Boolean(record?.goal);
   const latest=record?.attempts.at(-1);
-  return `<article class="challenge-card" data-category="${escape(challenge.category)}">
+  const kind=comparisonKind(challenge);
+  return `<article class="challenge-card" data-category="${escape(challenge.category)}" data-comparison="${kind}">
     <div class="card-top"><span class="challenge-icon">${icon(challenge.icon)}</span><button type="button" class="bookmark-button" data-goal="${escape(challenge.id)}" aria-label="${saved?'Remove':'Save'} ${escape(challenge.title)} ${saved?'from':'to'} goals" aria-pressed="${saved}">${icon(record?.won?'check':'bookmark')}</button></div>
-    <div class="card-labels"><span class="category-name">${categoryName(challenge.category)}</span>${record?.won?'<span class="card-tag">Completed</span>':challenge.tag?`<span class="card-tag">${escape(challenge.tag)}</span>`:''}</div>
+    <div class="card-labels"><span class="category-name">${categoryName(challenge.category)}</span><span class="comparison-badge comparison-${kind}">${icon(kind==='personal'?'flag':kind==='rank'?'layers':'study')}${comparisonLabel(challenge)}</span>${record?.won?'<span class="card-tag">Completed</span>':challenge.tag?`<span class="card-tag">${escape(challenge.tag)}</span>`:''}</div>
     <h3 class="card-title"><button type="button" data-open="${escape(challenge.id)}">${escape(challenge.title)}</button></h3>
     <p class="card-description">${escape(challenge.description)}</p>
-    <div class="card-bottom"><div><div class="card-target">${escape(targetLabel(challenge))}</div><div class="card-type">${challenge.type==='benchmark'?'Study comparison':'Personal target'}${challenge.time?` <span aria-hidden="true">·</span> ${escape(challenge.time)}`:''}</div></div><button type="button" class="card-open" data-open="${escape(challenge.id)}" aria-label="Open ${escape(challenge.title)}">${icon('chevron')}</button></div>
-    ${latest||record?.deadline?`<div class="card-record">${icon(record?.won?'check':'clock')}<span>${record?.won?'Completed · self-reported':latest?`Last result: ${escape(latest.value)} ${escape(challenge.unit)}`:'Saved to goals'}${record?.deadline?` · Target: ${escape(formatDate(record.deadline))}`:''}</span></div>`:''}
+    ${challenge.source?`<div class="card-comparison"><span>Compared with</span><p>${escape(challenge.source.cohort)}</p><a href="${escape(challenge.source.url)}" target="_blank" rel="noopener noreferrer">${escape(challenge.source.shortTitle||challenge.source.title)} · ${escape(challenge.source.year)} <span aria-hidden="true">↗</span></a></div>`:''}
+    <div class="card-bottom"><div><div class="card-target">${escape(targetLabel(challenge))}</div><div class="card-type">${challenge.type==='benchmark'?'Reference target':'Your own goal'}${challenge.time?` <span aria-hidden="true">·</span> ${escape(challenge.time)}`:''}</div></div><button type="button" class="card-open" data-open="${escape(challenge.id)}" aria-label="Open ${escape(challenge.title)}">${icon('chevron')}</button></div>
+    ${latest||record?.deadline?`<div class="card-record">${icon(record?.won?'check':'clock')}<span>${record?.won?'Completed · self-reported':latest?`Last result: ${escape(resultLabel(challenge,latest.value))}`:'Saved to goals'}${record?.deadline?` · Target: ${escape(formatDate(record.deadline))}`:''}</span></div>`:''}
   </article>`;
 }
 function formatDate(value) {return new Date(value.length===10?`${value}T12:00:00`:value).toLocaleDateString(undefined,{day:'numeric',month:'short'});}
@@ -108,6 +120,7 @@ function renderExplore() {
   $('#results-count').innerHTML=`<strong>${items.length}</strong> ${items.length===1?'challenge':'challenges'}`;
   $('#challenge-grid').innerHTML=items.map(item=>card(item)).join('');
   $('#no-results').hidden=items.length>0;
+  $$('[data-type-filter]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.typeFilter===filters.type)));
 }
 function renderPassport() {
   const totals=counts(state);
@@ -163,15 +176,16 @@ function renderDetail() {
     <div data-category="${escape(challenge.category)}">
       <div class="dialog-topline"><div class="dialog-category"><span class="challenge-icon">${icon(challenge.icon)}</span><span class="small-eyebrow">${categoryName(challenge.category)}${challenge.time?` · ${escape(challenge.time)}`:''}</span></div><button class="icon-button" type="button" data-close aria-label="Close challenge">${icon('close')}</button></div>
       <h2 id="detail-title">${escape(challenge.title)}</h2>${challenge.custom?'':`<p class="dialog-lead">${escape(challenge.description)}</p>`}
-      <div class="detail-meta"><span class="detail-badge">${challenge.type==='benchmark'?'Study comparison':'Personal target'}</span></div>
+      <div class="detail-meta"><span class="comparison-badge comparison-${comparisonKind(challenge)}">${icon(challenge.type==='benchmark'?'study':'flag')}${comparisonLabel(challenge)}</span>${challenge.source?`<span>${escape(challenge.source.cohort)}</span>`:''}</div>
       <div class="detail-target"><div><div class="small-eyebrow">TARGET</div><div class="target-value">${escape(targetLabel(challenge))}</div></div></div>
       <p class="instructions">${escape(challenge.instructions)}</p>
-      ${challenge.source?`<details class="source-details" open><summary>Where does “average” come from?</summary><p><strong>${escape(challenge.source.title)} · ${challenge.source.year}</strong><br>${escape(challenge.source.metric)}. ${escape(challenge.source.population)}</p>${challenge.source.note?`<p>${escape(challenge.source.note)}</p>`:''}<a href="${escape(challenge.source.url)}" target="_blank" rel="noopener noreferrer">Read the research and method ↗</a></details>`:''}
+      ${challenge.source?`<details class="source-details"><summary>About this comparison</summary><p><strong>${escape(challenge.source.title)} · ${escape(challenge.source.year)}</strong><br>${escape(challenge.source.metric)}. ${escape(challenge.source.population)}</p>${challenge.source.note?`<p>${escape(challenge.source.note)}</p>`:''}<a href="${escape(challenge.source.url)}" target="_blank" rel="noopener noreferrer">${comparisonKind(challenge)==='rank'?'View rank distribution':'Read the research'} ↗</a></details>`:''}
+      ${challenge.testUrl?`<a class="button button-outline external-test" href="${escape(challenge.testUrl)}" target="_blank" rel="noopener noreferrer">${escape(challenge.testLabel||'Take the test')} <span aria-hidden="true">↗</span></a>`:''}
       <div class="detail-actions"><button class="button button-outline" type="button" data-detail-goal="${escape(challenge.id)}" aria-pressed="${Boolean(record?.goal)}">${icon(record?.goal?'check':'bookmark')}<span>${record?.goal?'Saved to goals':'Save to goals'}</span></button><button class="text-button" type="button" data-customize="${escape(challenge.id)}">${challenge.custom?'Edit challenge':'Customize'} ${icon('chevron')}</button></div>
       ${challenge.game==='reaction'?`<section class="reaction-game" aria-label="Five-round reaction test"><div class="reaction-heading"><span>REACTION TEST</span><span id="reaction-round">5 rounds</span></div><button id="reaction-pad" class="reaction-pad" data-phase="idle" type="button"><strong>Start test</strong><span>Wait for green, then click or tap.</span></button><div id="reaction-result" class="reaction-result" hidden><p id="reaction-score"></p><button class="button button-outline" type="button" data-action="use-reaction">Use result</button></div><p class="reaction-help">Space or Enter also work.</p><span id="reaction-announcement" class="sr-only" role="status" aria-live="polite"></span></section>`:''}
-      ${record?.won?`<div class="achieved-message"><strong>Challenge completed</strong><p>${escape(best)} ${escape(challenge.unit)} · ${formatDate(record.achieved)} · Self-reported${challenge.type==='benchmark'?'<br>Above this study’s mean.':''}</p></div>`:''}
-      <form id="attempt-form"><div class="form-heading"><h3>Record an attempt</h3></div><div class="form-columns"><label>Your result (${escape(challenge.unit)})<input id="attempt-value" name="value" type="number" min="0" step="any" required inputmode="decimal" placeholder="${escape(challenge.target)}" ${latest?`value="${escape(latest.value)}"`:''}></label><label>Target date <span class="form-optional">optional</span><input name="deadline" type="date" value="${escape(record?.deadline)}"></label></div><details class="proof-fields"><summary>Notes and evidence <span class="form-optional">optional</span></summary><label>Notes<textarea name="note" maxlength="400" rows="2" placeholder="Add a note about your attempt."></textarea></label><label>Evidence link<input name="proof" type="url" maxlength="800" placeholder="https://…"></label></details><p class="form-error" id="attempt-error" role="alert" hidden></p><button class="button button-primary full-width" type="submit">Save attempt</button></form>
-      ${record?.attempts.length?`<section class="attempt-history"><h3>Recent attempts</h3>${[...record.attempts].reverse().slice(0,5).map(attempt=>`<div class="attempt-item"><div><strong>${escape(attempt.value)} ${escape(challenge.unit)}</strong>${attempt.note?`<p>${escape(attempt.note)}</p>`:''}${attempt.proof?`<a href="${escape(attempt.proof)}" target="_blank" rel="noopener noreferrer">View evidence ↗</a>`:''}</div><time datetime="${attempt.date}">${formatDate(attempt.date)}</time></div>`).join('')}</section>`:''}
+      ${record?.won?`<div class="achieved-message"><strong>Challenge completed</strong><p>${escape(resultLabel(challenge,best))} · ${formatDate(record.achieved)} · Self-reported${challenge.type==='benchmark'?'<br>Reference target reached.':''}</p></div>`:''}
+      <form id="attempt-form"><div class="form-heading"><h3>Record an attempt</h3></div><div class="form-columns"><label>Your result${challenge.resultOptions?'':` (${challenge.input==='duration'?'minutes:seconds':escape(challenge.unit)})`}${resultInput(challenge,latest)}</label><label>Target date <span class="form-optional">optional</span><input name="deadline" type="date" value="${escape(record?.deadline)}"></label></div><details class="proof-fields"><summary>Notes and evidence <span class="form-optional">optional</span></summary><label>Notes<textarea name="note" maxlength="400" rows="2" placeholder="Add a note about your attempt."></textarea></label><label>Evidence link<input name="proof" type="url" maxlength="800" placeholder="https://…"></label></details><p class="form-error" id="attempt-error" role="alert" hidden></p><button class="button button-primary full-width" type="submit">Save attempt</button></form>
+      ${record?.attempts.length?`<section class="attempt-history"><h3>Recent attempts</h3>${[...record.attempts].reverse().slice(0,5).map(attempt=>`<div class="attempt-item"><div><strong>${escape(resultLabel(challenge,attempt.value))}</strong>${attempt.note?`<p>${escape(attempt.note)}</p>`:''}${attempt.proof?`<a href="${escape(attempt.proof)}" target="_blank" rel="noopener noreferrer">View evidence ↗</a>`:''}</div><time datetime="${attempt.date}">${formatDate(attempt.date)}</time></div>`).join('')}</section>`:''}
     </div>`;
   const deadlineLabel=$('input[name="deadline"]',detailDialog)?.closest('label');
   if(deadlineLabel) {
@@ -193,7 +207,16 @@ function openChallenge(id) {currentId=id;renderDetail();openDialog(detailDialog)
 
 function openCreate(id='') {
   const original=state.challenges.find(item=>item.id===id);
+  createTemplate=original || null;
   const form=$('#create-form');form.reset();
+  const targetField=form.elements.target;
+  const replacement=document.createElement(original?.resultOptions?'select':'input');
+  replacement.name='target';replacement.required=true;
+  if(original?.resultOptions)replacement.innerHTML=original.resultOptions.map(option=>`<option value="${option.value}">${escape(option.label)}</option>`).join('');
+  else {replacement.type='number';replacement.step='any';replacement.min='0.01';replacement.placeholder='10';}
+  targetField.replaceWith(replacement);
+  form.elements.direction.disabled=Boolean(original?.resultOptions);
+  form.elements.unit.readOnly=Boolean(original?.resultOptions);
   form.elements.originalId.value=original?.custom?original.id:'';
   $('#create-title').textContent=original?.custom?'Edit challenge':original?'Customize challenge':'Create a challenge';
   $('#create-submit').textContent=original?.custom?'Save changes':'Create challenge';
@@ -266,6 +289,8 @@ document.addEventListener('click',event=>{
   if(undo){const record=state.records.get(undo.dataset.undo);record.won=false;record.achieved=null;renderAll();renderDetail();toast('Achievement removed. Attempts kept.');return;}
   const category=event.target.closest('[data-category-filter]');
   if(category){filters.category=category.dataset.categoryFilter;renderCategories();renderExplore();return;}
+  const type=event.target.closest('[data-type-filter]');
+  if(type){filters.type=type.dataset.typeFilter;renderExplore();return;}
   const passportButton=event.target.closest('[data-passport-tab]');
   if(passportButton){passportTab=passportButton.dataset.passportTab;renderPassport();return;}
   const customize=event.target.closest('[data-customize]');
@@ -280,15 +305,14 @@ document.addEventListener('click',event=>{
     const items=state.challenges.filter(item=>!state.records.get(item.id)?.won);
     const pool=items.length?items:state.challenges;openChallenge(pool[Math.floor(Math.random()*pool.length)].id);
   }
-  else if(action==='clear-filters'){filters={category:'all',query:'',type:'all'};$('#search').value='';$('#type-filter').value='all';renderCategories();renderExplore();}
+  else if(action==='clear-filters'){filters={category:'all',query:'',type:'all'};$('#search').value='';renderCategories();renderExplore();}
   else if(action==='reset')openDialog($('#reset-dialog'));
   else if(action==='confirm-reset'){
-    state=createState(initialChallenges);filters={category:'all',query:'',type:'all'};passportTab='goals';$('#search').value='';$('#type-filter').value='all';renderCategories();renderAll();closeDialog($('#reset-dialog'));navigate('explore');toast('Progress reset.');
+    state=createState(initialChallenges);filters={category:'all',query:'',type:'all'};passportTab='goals';$('#search').value='';renderCategories();renderAll();closeDialog($('#reset-dialog'));navigate('explore');toast('Progress reset.');
   }
   else if(action==='use-reaction'&&game?.average){$('#attempt-value').value=game.average;$('#attempt-value').focus();toast('Result added to your attempt.');}
 });
 $('#search').addEventListener('input',event=>{filters.query=event.target.value;renderExplore();});
-$('#type-filter').addEventListener('change',event=>{filters.type=event.target.value;renderExplore();});
 document.addEventListener('submit',event=>{
   if(event.target.id==='attempt-form') {
     event.preventDefault();
@@ -305,7 +329,7 @@ document.addEventListener('submit',event=>{
     const data=Object.fromEntries(new FormData(form));
     try{
       if(!categories.some(category=>category.id===data.category&&category.id!=='all'))throw new Error('Choose a category.');
-      const item=makeCustomChallenge(data,data.originalId);
+      const item=makeCustomChallenge(data,data.originalId,createTemplate);
       if(data.originalId){const index=state.challenges.findIndex(challenge=>challenge.id===data.originalId);state.challenges[index]=item;state.records.delete(item.id);}
       else state.challenges.unshift(item);
       toggleGoal(state,item.id);closeDialog(createDialog);renderAll();openChallenge(item.id);toast(data.originalId?'Challenge updated.':'Challenge created.');

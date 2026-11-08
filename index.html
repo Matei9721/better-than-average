@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';</script>
-    <link rel="stylesheet" href="./styles.css?v=mean-passport">
+    <link rel="stylesheet" href="./styles.css?v=study-cards">
     <script type="module" src="./app.js"></script>
   </head>
   <body>
@@ -52,7 +52,7 @@
         <section id="explore-view" aria-labelledby="explore-title">
           <div class="section-heading"><h2 id="explore-title">Explore challenges</h2></div>
           <div class="explore-toolbar"><div class="category-list" id="categories" role="group" aria-label="Filter by category"></div><label class="search-box"><span data-icon="search"></span><span class="sr-only">Search challenges</span><input id="search" type="search" placeholder="Search challenges" autocomplete="off"></label></div>
-          <div class="results-bar"><p id="results-count" aria-live="polite"></p><label class="type-filter"><span class="sr-only">Challenge type</span><select id="type-filter"><option value="all">All challenge types</option><option value="benchmark">Study comparisons</option><option value="personal">Personal challenges</option></select><span aria-hidden="true">⌄</span></label></div>
+          <div class="results-bar"><div class="type-filters" role="group" aria-label="Challenge type"><button type="button" data-type-filter="all" aria-pressed="true">All</button><button type="button" data-type-filter="study" aria-pressed="false">Study based</button><button type="button" data-type-filter="rank" aria-pressed="false">Rank data</button><button type="button" data-type-filter="personal" aria-pressed="false">Personal targets</button></div><p id="results-count" aria-live="polite"></p></div>
           <div id="challenge-grid" class="challenge-grid"></div>
           <div id="no-results" class="empty-state" hidden><h3>No challenges found</h3><p>Try a different search or add your own challenge.</p><button type="button" class="button button-primary" data-action="clear-filters">Clear filters</button><button type="button" class="button button-quiet" data-action="create">Add challenge</button></div>
         </section>
@@ -78,7 +78,7 @@
       <div class="dialog-topline dialog-topline-close"><button type="button" class="icon-button" data-close data-icon="close" aria-label="Close help"></button></div>
       <h2 id="about-title">How it works</h2>
       <p class="dialog-lead">Choose a challenge, save it as a goal, and record your results. Completed challenges appear in your passport.</p>
-      <section class="about-section"><h3>What does “average” mean?</h3><p>The above-average count tracks results that beat a named study’s average. Personal wins use the challenge’s own target. Each study comparison includes its source, method and comparison group.</p><p>Results and evidence are self-reported.</p></section>
+      <section class="about-section"><h3>What does “average” mean?</h3><p>Study-based challenges use published results to set a target. Rank cards use a dated player distribution. Each card names the group you’re comparing with; some targets are rounded to make them easier to aim for.</p><p>These are useful reference points, rather than a ranking against everyone on Earth. Personal targets are goals you set for yourself. Results and evidence are self-reported.</p></section>
       <p class="form-note session-notice">Progress resets when you refresh this page.</p>
       <button type="button" class="button button-primary full-width" data-close>Got it</button>
     </dialog>

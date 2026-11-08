@@ -22,7 +22,7 @@ node scripts/serve.mjs --dist
 
 ## What works
 
-- 24 starter challenges, category/search/type filters, and random discovery.
+- 35 starter challenges: 12 study-based comparisons, 2 rank-data targets, and 21 personal targets, with category/search/type filters and random discovery.
 - Goals, optional target dates, repeated attempts, evidence links and notes, and a skill passport.
 - A five-round reaction-time game with a result you can add to an attempt.
 - Custom challenges and personal variations of the starter catalogue.
@@ -31,9 +31,11 @@ node scripts/serve.mjs --dist
 
 ## Honest comparisons
 
-Most starter challenges use explicitly labelled personal targets. The typing challenge compares against the published mean in [Aalto and Cambridge's 2018 typing study](https://www.aalto.fi/en/news/the-traits-of-fast-typists-discovered-by-analysing-136-million-keystrokes), with the study population and method visible in its details. A self-reported result is not independent verification or a world percentile. Reaction time has a personal target because browsers, displays, and input devices affect results.
+Study-based cards show the comparison group, reference and publication year, with the protocol in their details. Some goals round published means upward to give people a practical target. Gaming cards have a separate **Rank data** label and use dated observed distributions rather than academic studies. The source register and rounding decisions are in [docs/benchmarks.md](docs/benchmarks.md).
 
-The two counts remain separate. Repeat successes count once per challenge; later attempts do not erase a dated achievement. Customizing a benchmark creates a personal challenge. Editing an existing custom challenge resets its attempts because its rules have changed.
+A self-reported result is not independent verification or a world percentile. Reference groups vary by age, sex and participation; they are visible on the cards. Reaction time and playing a whole song remain personal targets. Musical listening uses Mini-PROMS and does not claim to measure instrument performance.
+
+Sourced wins and personal wins remain separate. Repeat successes count once per challenge; later attempts do not erase a dated achievement. Running accepts minutes:seconds, League rank uses named choices, and bounded test scores reject impossible values. Customizing a benchmark creates a personal challenge, preserving its time or rank input format. Editing an existing custom challenge resets its attempts because its rules have changed.
 
 Google Fonts supplies DM Sans and Space Grotesk, with system font fallbacks. No application data is sent to a server.
 
