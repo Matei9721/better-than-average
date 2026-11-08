@@ -4,6 +4,7 @@
   --ink: #252e25; --secondary: #697263; --faint: #92988a;
   --line: #dfe3d7; --soft: #edf0e5; --accent: #d5ef83;
   --accent-ink: #29391d; --forest: #263e2e; --forest-ink: #f1f6e8; --brand: #263e2e;
+  --passport: #263e2e; --passport-ink: #f1f6e8; --passport-muted: #c0cdb7; --passport-line: #ffffff26;
   --button: #28352a; --button-ink: #fffef5;
   --green: #e9efdb; --green-ink: #49612f; --peach: #f6e8d9; --peach-ink: #8c5b3a;
   --lavender: #eeeaf5; --lavender-ink: #76618f; --blue: #e5edf0; --blue-ink: #466a78;
@@ -17,6 +18,7 @@
   --ink: #ecf0e5; --secondary: #a3af9e; --faint: #81907c;
   --line: #354132; --soft: #252f25; --accent: #d5ef83;
   --accent-ink: #25351b; --forest: #20382a; --forest-ink: #f1f6e8; --brand: #d5ef83;
+  --passport: #1d3024; --passport-ink: #f1f6e8; --passport-muted: #bac9b2; --passport-line: #ffffff26;
   --button: #d5ef83; --button-ink: #25351b;
   --green: #2b3c27; --green-ink: #bdd299; --peach: #403124; --peach-ink: #e0b68e;
   --lavender: #332e40; --lavender-ink: #c4afd9; --blue: #263941; --blue-ink: #a3c9d7;
@@ -46,15 +48,16 @@ svg.icon { width: 20px; height: 20px; display: block; flex-shrink: 0; }
 [data-icon] { display: inline-flex; align-items: center; justify-content: center; }
 .page-wrap { max-width: 1296px; margin: auto; padding: 0 48px; }
 .site-header { position: sticky; top: 0; z-index: 20; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--page) 94%, transparent); backdrop-filter: blur(16px); }
-.header-inner { max-width: 1392px; padding: 21px 48px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 26px; }
+.header-inner { max-width: 1392px; padding: 18px 48px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 26px; }
 .brand { display: flex; align-items: center; gap: 11px; flex-shrink: 0; }
-.brand-mark { width: 38px; height: 38px; display: inline-flex; flex-shrink: 0; color: var(--brand); }
-.brand-symbol { display: block; width: 100%; height: 100%; background: currentColor; -webkit-mask: url('./assets/brand-mark.svg') center / contain no-repeat; mask: url('./assets/brand-mark.svg') center / contain no-repeat; }
+.brand-mark { width: 78px; height: 36px; display: inline-flex; flex-shrink: 0; color: var(--brand); }
+.brand-symbol { display: block; width: 100%; height: 100%; background: currentColor; -webkit-mask: url('./assets/brand-lockup.svg') center / contain no-repeat; mask: url('./assets/brand-lockup.svg') center / contain no-repeat; }
 .brand-name { font-size: 14px; font-weight: 650; line-height: 1.05; letter-spacing: -.2px; }
 .main-nav { display: flex; align-items: center; gap: 6px; }
-.nav-link { padding: 10px 17px; font-size: 13px; font-weight: 550; color: var(--secondary); border-radius: 8px; border: 0; background: none; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.nav-link { position: relative; padding: 10px 17px; font-size: 13px; font-weight: 550; color: var(--secondary); border-radius: 8px; border: 0; background: none; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
 .nav-link:hover { color: var(--ink); background: var(--soft); }
-.nav-link.active { color: var(--ink); background: var(--soft); }
+.nav-link.active { color: var(--ink); }
+.nav-link.active:after { content: ''; position: absolute; left: 17px; right: 17px; bottom: 4px; height: 2px; background: var(--brand); border-radius: 1px; }
 .nav-count { display: inline-grid; place-items: center; width: 18px; height: 18px; font-size: 10px; background: var(--accent); color: var(--accent-ink); border-radius: 50%; }
 .header-actions { display: flex; align-items: center; gap: 13px; }
 .icon-button { background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 50%; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -75,40 +78,33 @@ svg.icon { width: 20px; height: 20px; display: block; flex-shrink: 0; }
 .text-button { display: inline-flex; align-items: center; gap: 8px; border: none; background: transparent; color: var(--secondary); font-size: 12px; padding: 10px 0; }
 .text-button:hover { color: var(--ink); }
 .text-button .icon { width: 15px; height: 15px; }
-.hero { display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 65px; padding: 75px 0 69px; }
-h1 { font-size: clamp(48px, 5.1vw, 69px); line-height: 1.07; letter-spacing: -3.9px; font-weight: 500; }
-.word-things { display: inline-block; position: relative; z-index: 0; }
-.word-things svg { position: absolute; width: 108%; left: -3%; bottom: -9px; height: 16px; stroke: var(--green-ink); opacity: .7; stroke-width: 3; stroke-linecap: round; fill: none; }
-.hero-description { color: var(--secondary); font-size: 15px; line-height: 1.8; max-width: 399px; margin-top: 27px; }
+.hero-layout { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); align-items: center; gap: 80px; padding: 56px 0 52px; }
+.hero { min-width: 0; }
+h1 { font-size: clamp(48px,5vw,64px); line-height: 1.08; letter-spacing: -2.9px; font-weight: 500; }
+.hero-description { color: var(--secondary); font-size: 16px; line-height: 1.75; max-width: 440px; margin-top: 24px; }
 .hero-actions { display: flex; align-items: center; gap: 16px; margin-top: 28px; }
 .hero-actions .button { min-height: 49px; }
-.hero-art { position: relative; height: 380px; isolation: isolate; display: grid; place-items: center; }
-.passport-cover { width: 247px; height: 318px; padding: 22px 24px; background: var(--forest); color: var(--forest-ink); border-radius: 13px 19px 19px 13px; transform: rotate(-10deg); box-shadow: 10px 14px 0 color-mix(in srgb, var(--forest) 13%, var(--page)), 0 12px 20px #1117; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-.passport-cover:before { content: ''; width: 4px; position: absolute; left: 7px; top: 9px; bottom: 9px; border-left: 1px solid #ffffff15; }
-.cover-top { display: flex; justify-content: space-between; gap: 16px; font-size: 7px; font-weight: 500; letter-spacing: 1px; color: #b4c6a9; }
-.cover-title { font-family: var(--heading-font); font-size: 32px; letter-spacing: -1.8px; line-height: 1.05; padding-top: 10px; font-weight: 500; }
-.cover-mark { color: var(--accent); width: 84px; height: 84px; margin: 2px 0 0; align-self: center; }
-.cover-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 7px; letter-spacing: 1.4px; color: #b4c6a9; }
-.floating-stamp { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; border-radius: 7px; box-shadow: 0 6px 15px #00000018; padding: 9px; border: 6px solid var(--surface); outline: 1px solid var(--line); }
-.floating-stamp > span { font-family: var(--heading-font); line-height: 1; font-size: 42px; }
-.floating-stamp small { font-size: 6px; letter-spacing: .5px; font-weight: 650; }
-.stamp-music { width: 98px; height: 102px; background: var(--peach); color: var(--peach-ink); top: 23px; left: -2px; transform: rotate(-15deg); }
-.stamp-cube { width: 100px; height: 104px; background: var(--lavender); color: var(--lavender-ink); right: 2px; bottom: 36px; transform: rotate(12deg); }
-.passport-strip { display: flex; align-items: center; gap: 35px; padding: 22px 25px; background: var(--surface); border: 1px solid var(--line); border-radius: 13px; }
-.strip-intro { display: flex; align-items: center; gap: 14px; flex: 1; }
-.strip-icon { width: 43px; height: 49px; border: 1px solid var(--line); border-radius: 8px; color: var(--green-ink); transform: rotate(-6deg); background: var(--soft); }
-.strip-icon .icon { width: 23px; height: 23px; }
+.passport-strip { min-width: 0; display: flex; flex-direction: column; align-items: stretch; padding: 28px; background: var(--passport); color: var(--passport-ink); border: 1px solid var(--passport-line); border-radius: 20px; box-shadow: 0 18px 42px #14261812; }
+.strip-intro { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.passport-mark { display: inline-flex; width: 96px; height: 44px; flex-shrink: 0; color: var(--accent); }
 .small-eyebrow { font-size: 9px; letter-spacing: 1.6px; color: var(--secondary); font-weight: 650; }
-.strip-intro strong { display: block; font-weight: 500; font-family: var(--heading-font); font-size: 16px; letter-spacing: -.3px; }
-.strip-stats { display: flex; align-items: center; gap: 32px; }
-.stat { display: flex; flex-direction: column; gap: 2px; }
-.stat > span:first-child { font-size: 27px; font-family: var(--heading-font); line-height: 1.2; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
-.stat > span:last-child { font-size: 10px; color: var(--secondary); white-space: nowrap; display: flex; align-items: center; gap: 4px; }
-.tiny-info { border: 1px solid var(--line); background: none; border-radius: 50%; width: 12px; height: 12px; padding: 0; font-size: 8px; line-height: 1; color: var(--secondary); }
-.strip-link { border: 0; background: var(--soft); display: flex; align-items: center; gap: 12px; border-radius: 8px; padding: 10px 13px; font-size: 11px; white-space: nowrap; }
-.strip-link:hover { background: var(--accent); color: var(--accent-ink); }
-main { padding-top: 67px; outline: none; }
-.passport-mode { padding-top: 38px; }
+.strip-intro strong { font-weight: 500; font-size: 15px; letter-spacing: -.1px; }
+.strip-stats { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; padding-top: 24px; margin-top: 30px; border-top: 1px solid var(--passport-line); }
+.stat { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.stat > span:first-child { font-size: 40px; font-family: var(--heading-font); line-height: 1.1; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; }
+.stat > span:last-child { font-size: 11px; color: var(--passport-muted); white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+.tiny-info { border: 1px solid var(--passport-muted); background: none; border-radius: 50%; width: 12px; height: 12px; flex-shrink: 0; padding: 0; font-size: 8px; line-height: 1; color: var(--passport-muted); }
+.strip-link { border: 0; border-top: 1px solid var(--passport-line); margin-top: 24px; background: transparent; color: var(--passport-ink); display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 0 0; min-height: 44px; font-size: 13px; font-weight: 500; white-space: nowrap; }
+.strip-link:hover { color: var(--accent); }
+main { padding-top: 32px; outline: none; }
+.passport-mode { padding-top: 32px; }
+.passport-mode .hero-layout { display: block; padding: 0; }
+.passport-mode .passport-strip { flex-direction: row; align-items: center; gap: 36px; padding: 20px 26px; border-radius: 14px; box-shadow: none; }
+.passport-mode .strip-intro { flex: 0 0 220px; }
+.passport-mode .passport-mark { width: 62px; height: 29px; }
+.passport-mode .strip-stats { flex: 1; margin: 0; padding: 0; border: 0; gap: 30px; }
+.passport-mode .stat > span:first-child { font-size: 28px; }
+.passport-mode .strip-link { display: none; }
 .passport-mode main { padding-top: 44px; }
 .section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; margin-bottom: 28px; }
 h2 { font-size: 31px; font-weight: 500; line-height: 1.2; letter-spacing: -1.25px; }
@@ -129,8 +125,8 @@ h2 { font-size: 31px; font-weight: 500; line-height: 1.2; letter-spacing: -1.25p
 .type-filter select { appearance: none; border: 0; background: none; color: var(--secondary); font-size: 11px; padding: 5px 20px 5px 7px; cursor: pointer; }
 .type-filter > span:last-child { position: absolute; right: 4px; pointer-events: none; }
 .challenge-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
-.challenge-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 23px; display: flex; flex-direction: column; min-width: 0; position: relative; transition: transform .2s, box-shadow .2s, border-color .2s; animation: card-in .35s both; animation-delay: calc(var(--card-order,0) * 25ms); }
-.challenge-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: color-mix(in srgb, var(--green-ink) 40%, var(--line)); }
+.challenge-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 23px; display: flex; flex-direction: column; min-width: 0; position: relative; transition: background .18s, border-color .18s; }
+.challenge-card:hover { background: var(--surface-hover); border-color: color-mix(in srgb, var(--green-ink) 45%, var(--line)); }
 .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 19px; }
 .challenge-icon { width: 48px; height: 48px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; background: var(--tile-bg,var(--green)); color: var(--tile-ink,var(--green-ink)); flex-shrink: 0; }
 .challenge-icon .icon { width: 26px; height: 26px; stroke-width: 1.6; }
@@ -149,10 +145,10 @@ h2 { font-size: 31px; font-weight: 500; line-height: 1.2; letter-spacing: -1.25p
 .card-title { font-size: 19px; line-height: 1.3; letter-spacing: -.7px; font-weight: 500; margin-bottom: 9px; }
 .card-title button { font: inherit; background: none; padding: 0; border: 0; text-align: left; letter-spacing: inherit; }
 .card-title button:after { content: ''; position: absolute; inset: 82px 20px 76px; }
-.card-description { color: var(--secondary); font-size: 12px; line-height: 1.75; margin-bottom: 20px; flex: 1; max-width: 290px; }
+.card-description { color: var(--secondary); font-size: 13px; line-height: 1.65; margin-bottom: 20px; flex: 1; max-width: 290px; }
 .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line); padding-top: 14px; margin-top: auto; }
 .card-target { color: var(--ink); font-size: 12px; font-weight: 550; }
-.card-type { display: flex; align-items: center; gap: 4px; color: var(--secondary); font-size: 9px; margin-top: 3px; }
+.card-type { display: flex; align-items: center; gap: 4px; color: var(--secondary); font-size: 11px; margin-top: 3px; }
 .card-open { border: 1px solid var(--line); width: 32px; height: 32px; display: grid; place-items: center; background: transparent; color: var(--secondary); border-radius: 50%; flex-shrink: 0; }
 .card-open:hover { background: var(--button); color: var(--button-ink); border-color: var(--button); }
 .card-open .icon { width: 14px; height: 14px; }
@@ -160,7 +156,7 @@ h2 { font-size: 31px; font-weight: 500; line-height: 1.2; letter-spacing: -1.25p
 .card-record .icon { width: 13px; height: 13px; }
 .site-footer { border-top: 1px solid var(--line); display: flex; align-items: center; gap: 20px; justify-content: space-between; padding: 25px 0 30px; margin-top: 56px; }
 .footer-brand { font-family: var(--heading-font); font-size: 13px; font-weight: 500; letter-spacing: -.5px; display: flex; align-items: center; gap: 8px; }
-.footer-mark { color: var(--brand); width: 25px; height: 25px; display: inline-flex; flex-shrink: 0; }
+.footer-mark { color: var(--brand); width: 50px; height: 24px; display: inline-flex; flex-shrink: 0; }
 .passport-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin: 26px 0; }
 .segmented { display: flex; gap: 4px; background: var(--soft); border-radius: 9px; padding: 4px; }
 .segmented button { display: flex; gap: 8px; align-items: center; background: transparent; border: 0; color: var(--secondary); padding: 10px 14px; font-size: 12px; border-radius: 6px; }
@@ -244,26 +240,26 @@ h2 { font-size: 31px; font-weight: 500; line-height: 1.2; letter-spacing: -1.25p
 .celebration { position: fixed; inset: 0; pointer-events: none; z-index: 70; overflow: hidden; }
 .confetti-piece { position: absolute; top: 42%; left: 50%; width: 8px; height: 14px; border-radius: 2px; background: var(--piece-color); animation: confetti .9s ease-out forwards; }
 .noscript-note { padding: 30px; text-align: center; }
-@keyframes card-in { from {opacity:0;transform:translateY(8px)} to {opacity:1;transform:translateY(0)} }
 @keyframes dialog-in { from {opacity:0;transform:translateY(10px)} to {opacity:1;transform:translateY(0)} }
 @keyframes confetti { from {transform:translate(0,0) rotate(0);opacity:1} to {transform:translate(var(--dx),var(--dy)) rotate(var(--rotation));opacity:0} }
-@media (min-width:1500px) { .hero { gap: 95px; } }
+@media (min-width:1500px) { .hero-layout { gap: 96px; } }
 @media (max-width:1150px) {
   .page-wrap { padding: 0 32px; } .header-inner { padding: 18px 32px; }
-  .hero { gap: 36px; } h1 { font-size: 58px; } .hero-art { transform: scale(.92); }
-  .passport-strip { gap: 22px; } .strip-stats { gap: 22px; } .strip-intro strong { font-size: 13px; }
-  .strip-link { font-size: 10px; gap: 7px; } .explore-toolbar { align-items: flex-start; }
+  .hero-layout { gap: 48px; } h1 { font-size: 56px; }
+  .passport-strip { padding: 25px; } .strip-stats { gap: 12px; }
+  .explore-toolbar { align-items: flex-start; }
   .category-list { max-width: 650px; } .category-chip { padding: 8px; font-size: 10px; }
   .search-box { min-width: 160px; } .search-box input { width: 110px; }
 }
 @media (max-width:900px) {
   .nav-about { display: none; } .brand-name { display:none; } .header-inner { gap: 14px; }
-  .hero { gap: 20px; padding: 62px 0 57px; grid-template-columns: 1.2fr 1fr; }
-  h1 { font-size: 49px; letter-spacing: -3px; } .hero-description { font-size: 13px; }
-  .hero-art { transform: scale(.78); transform-origin: center; margin: 0 -22px; }
-  .hero-actions { gap: 9px; } .hero-actions .button { font-size: 11px; gap: 9px; padding: 12px; }
-  .strip-link { display: none; } .strip-intro { gap: 10px; } .strip-icon { width: 35px; height: 42px; }
-  .small-eyebrow { font-size: 8px; } .strip-stats { gap: 25px; }
+  .hero-layout { grid-template-columns: 1fr; gap: 32px; padding: 48px 0 12px; }
+  h1 { font-size: 54px; letter-spacing: -2.3px; } .hero-description { font-size: 16px; max-width: 540px; }
+  .hero-actions { gap: 16px; }
+  .strip-stats { margin-top: 24px; padding-top: 20px; }
+  .strip-link { margin-top: 20px; }
+  .passport-mode .strip-intro { flex-basis: 200px; }
+  .small-eyebrow { font-size: 8px; }
   .challenge-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   h2 { font-size: 29px; }
   .explore-toolbar { flex-direction: column-reverse; align-items: stretch; gap: 16px; }
@@ -273,22 +269,23 @@ h2 { font-size: 31px; font-weight: 500; line-height: 1.2; letter-spacing: -1.25p
 }
 @media (max-width:650px) {
   html { scroll-padding-top: 90px; } .page-wrap { padding: 0 20px; } .header-inner { padding: 13px 20px; gap: 10px; }
-  .brand-mark { width: 34px; height: 34px; } .main-nav { gap: 1px; margin-left: auto; }
+  .brand-mark { width: 68px; height: 32px; } .main-nav { gap: 1px; margin-left: auto; }
   .nav-link { padding: 8px 10px; font-size: 11px; min-height: 40px; } .header-actions { gap: 5px; }
   .theme-toggle { width: 34px; height: 38px; } .theme-toggle .icon { width: 18px; height: 18px; }
   .header-create { width: 36px; min-height: 36px; padding: 5px; font-size: 19px; border-radius: 8px; } .create-label { display:none; }
-  .hero { padding: 42px 0 33px; display:flex; flex-direction:column; align-items:stretch; gap: 5px; }
-  h1 { font-size: clamp(43px, 10.5vw, 62px); letter-spacing: -2.6px; line-height: 1.08; }
-  .hero-description { font-size: 13px; margin-top: 24px; max-width: 355px; }
+  .hero-layout { gap: 28px; padding: 40px 0 4px; }
+  h1 { font-size: clamp(40px,10.4vw,56px); letter-spacing: -1.9px; line-height: 1.1; }
+  .hero-description { font-size: 14px; margin-top: 22px; max-width: 430px; }
   .hero-actions { gap: 10px; margin-top: 23px; } .hero-actions .button { font-size: 12px; gap: 12px; padding: 12px 15px; }
-  .hero-art { height: 302px; transform: scale(.78); margin: -12px -20px -30px; }
-  .passport-cover { height: 304px; width: 239px; }
-  .stamp-music { left: 15px; top: -3px; } .stamp-cube { right: 20px; bottom: 10px; }
-  .passport-strip { flex-direction: column; align-items: stretch; gap: 19px; padding: 19px; border-radius: 12px; }
-  .strip-intro { gap: 13px; } .strip-icon { width: 36px; height: 42px; } .strip-intro strong { font-size: 14px; }
-  .strip-stats { justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--line); gap: 10px; }
-  .stat > span:first-child { font-size: 26px; } .stat > span:last-child { font-size: 10px; }
-  main { padding-top: 43px; } .section-heading { margin-bottom: 23px; }
+  .passport-strip { padding: 22px; border-radius: 16px; }
+  .passport-mark { width: 82px; height: 38px; } .strip-intro strong { font-size: 14px; }
+  .strip-stats { grid-template-columns: 1.3fr 1.1fr .6fr; gap: 12px; margin-top: 20px; padding-top: 20px; }
+  .stat > span:first-child { font-size: 34px; } .stat > span:last-child { font-size: 11px; }
+  .strip-link { margin-top: 18px; padding-top: 14px; font-size: 12px; }
+  .passport-mode .passport-strip { flex-direction: column; align-items: stretch; gap: 18px; padding: 20px; }
+  .passport-mode .strip-intro { flex: initial; }
+  .passport-mode .strip-stats { flex: initial; width: 100%; padding-top: 18px; border-top: 1px solid var(--passport-line); gap: 12px; }
+  main { padding-top: 40px; } .section-heading { margin-bottom: 23px; }
   h2 { font-size: 27px; letter-spacing: -1px; max-width: 390px; }
   .category-list { gap: 6px; } .category-chip { font-size: 11px; padding: 8px 10px; min-height: 36px; background: var(--soft); }
   .category-chip .icon { width: 13px; height: 13px; } .explore-toolbar { padding-bottom: 17px; gap: 14px; }
@@ -312,11 +309,11 @@ h2 { font-size: 31px; font-weight: 500; line-height: 1.2; letter-spacing: -1.25p
   .toast { bottom: 18px; width: max-content; font-size: 11px; }
 }
 @media (max-width:360px) {
-  .header-inner { padding: 12px 13px; } .page-wrap { padding: 0 16px; } .brand-mark { width: 30px; height: 30px; }
+  .header-inner { padding: 12px 13px; } .page-wrap { padding: 0 16px; } .brand-mark { width: 56px; height: 27px; }
   .nav-link { padding: 8px; font-size: 10px; } .header-create { width: 31px; } .theme-toggle { width: 29px; }
   .header-inner { gap: 4px; } .hero-actions { gap: 1px; } .hero-actions .button { font-size: 11px; padding: 12px; gap: 8px; }
-  .hero-art { transform: scale(.7); margin-left: -30px; margin-right: -30px; } .category-chip { font-size: 10px; padding: 8px; }
-  .stat > span:last-child { font-size: 9px; } .passport-strip { padding: 17px; } .segmented button { font-size: 10px; padding: 9px 8px; }
+  .category-chip { font-size: 10px; padding: 8px; }
+  .stat > span:last-child { font-size: 10px; } .passport-strip { padding: 18px; } .segmented button { font-size: 10px; padding: 9px 8px; }
   .passport-toolbar .text-button { font-size: 9px; } .app-dialog { padding: 19px; }
 }
 @media (pointer:coarse) {

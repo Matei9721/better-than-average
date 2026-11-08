@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';</script>
-    <link rel="stylesheet" href="./styles.css?v=greater-than">
+    <link rel="stylesheet" href="./styles.css?v=mean-passport">
     <script type="module" src="./app.js"></script>
   </head>
   <body>
@@ -32,24 +32,21 @@
     </header>
 
     <div class="page-wrap">
+      <div class="hero-layout">
       <section class="hero" id="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <h1 id="hero-title">A little better.<br>At a lot of <span class="word-things">things<svg viewBox="0 0 250 18" aria-hidden="true"><path d="M4 11 Q100 0 245 8 M15 15 Q130 7 237 13"/></svg></span></h1>
+          <h1 id="hero-title">A little better.<br>At a lot of things.</h1>
           <p class="hero-description">There are so many people on this planet. So many things to do. How many are you better than average at?</p>
           <div class="hero-actions"><a class="button button-primary" href="#main">Explore challenges <span aria-hidden="true">→</span></a><button class="button button-quiet" type="button" data-action="surprise"><span data-icon="shuffle"></span> Surprise me</button></div>
-        </div>
-        <div class="hero-art" aria-hidden="true">
-          <div class="passport-cover"><div class="cover-top">SKILL PASSPORT</div><span class="cover-title">THINGS<br>YOU CAN<br>DO.</span><div class="cover-mark"><span class="brand-symbol"></span></div><div class="cover-bottom">BETTER THAN AVERAGE</div></div>
-          <div class="floating-stamp stamp-music"><span>♪</span><small>MUSIC</small></div>
-          <div class="floating-stamp stamp-cube"><span>▦</span><small>PUZZLES</small></div>
         </div>
       </section>
 
       <section class="passport-strip" aria-label="Your progress">
-        <div class="strip-intro"><div class="strip-icon" data-icon="passport"></div><strong>Your progress</strong></div>
-        <div class="strip-stats"><div class="stat"><span id="benchmark-count">00</span><span>above average <button type="button" class="tiny-info" aria-label="About comparisons" data-action="about">i</button></span></div><div class="stat"><span id="personal-count">00</span><span>personal wins</span></div><div class="stat"><span id="goal-count">00</span><span>goals</span></div></div>
+        <div class="strip-intro"><span class="passport-mark" aria-hidden="true"><span class="brand-symbol"></span></span><strong>Your passport</strong></div>
+        <div class="strip-stats"><div class="stat"><span id="benchmark-count">0</span><span>above average <button type="button" class="tiny-info" aria-label="About comparisons" data-action="about">i</button></span></div><div class="stat"><span id="personal-count">0</span><span>personal wins</span></div><div class="stat"><span id="goal-count">0</span><span>goals</span></div></div>
         <button class="strip-link" type="button" data-action="passport">Open passport <span aria-hidden="true">→</span></button>
       </section>
+      </div>
 
       <main id="main" tabindex="-1">
         <section id="explore-view" aria-labelledby="explore-title">

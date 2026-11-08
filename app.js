@@ -89,11 +89,11 @@ function celebrate() {
 function renderCategories() {
   $('#categories').innerHTML=categories.map(category=>`<button class="category-chip" type="button" data-category-filter="${category.id}" aria-pressed="${category.id===filters.category}">${icon(category.icon)}${category.name}</button>`).join('');
 }
-function card(challenge, order=0) {
+function card(challenge) {
   const record=state.records.get(challenge.id);
   const saved=Boolean(record?.goal);
   const latest=record?.attempts.at(-1);
-  return `<article class="challenge-card" data-category="${escape(challenge.category)}" style="--card-order:${Math.min(order,5)}">
+  return `<article class="challenge-card" data-category="${escape(challenge.category)}">
     <div class="card-top"><span class="challenge-icon">${icon(challenge.icon)}</span><button type="button" class="bookmark-button" data-goal="${escape(challenge.id)}" aria-label="${saved?'Remove':'Save'} ${escape(challenge.title)} ${saved?'from':'to'} goals" aria-pressed="${saved}">${icon(record?.won?'check':'bookmark')}</button></div>
     <div class="card-labels"><span class="category-name">${categoryName(challenge.category)}</span>${record?.won?'<span class="card-tag">Completed</span>':challenge.tag?`<span class="card-tag">${escape(challenge.tag)}</span>`:''}</div>
     <h3 class="card-title"><button type="button" data-open="${escape(challenge.id)}">${escape(challenge.title)}</button></h3>
@@ -106,7 +106,7 @@ function formatDate(value) {return new Date(value.length===10?`${value}T12:00:00
 function renderExplore() {
   const items=filterChallenges(state.challenges,filters);
   $('#results-count').innerHTML=`<strong>${items.length}</strong> ${items.length===1?'challenge':'challenges'}`;
-  $('#challenge-grid').innerHTML=items.map((item,index)=>card(item,index)).join('');
+  $('#challenge-grid').innerHTML=items.map(item=>card(item)).join('');
   $('#no-results').hidden=items.length>0;
 }
 function renderPassport() {
@@ -115,15 +115,15 @@ function renderPassport() {
   $('#wins-tab-count').textContent=totals.benchmark+totals.personal;
   $$('[data-passport-tab]').forEach(button=>{const selected=button.dataset.passportTab===passportTab;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
   const items=state.challenges.filter(item=>{const record=state.records.get(item.id);return passportTab==='wins'?record?.won:record?.goal&&!record?.won;});
-  $('#passport-grid').innerHTML=items.map((item,index)=>card(item,index)).join('');
+  $('#passport-grid').innerHTML=items.map(item=>card(item)).join('');
   const empty=$('#passport-empty');empty.hidden=items.length>0;
   if(!items.length)empty.innerHTML=`<h3>${passportTab==='wins'?'No completed challenges yet':'No saved goals yet'}</h3><p>${passportTab==='wins'?'Record a passing result to add a challenge to your collection.':'Save a challenge to find it here.'}</p><button type="button" class="button button-primary" data-action="explore">Explore challenges</button>`;
 }
 function renderStats() {
   const totals=counts(state);
-  $('#benchmark-count').textContent=String(totals.benchmark).padStart(2,'0');
-  $('#personal-count').textContent=String(totals.personal).padStart(2,'0');
-  $('#goal-count').textContent=String(totals.goals).padStart(2,'0');
+  $('#benchmark-count').textContent=String(totals.benchmark);
+  $('#personal-count').textContent=String(totals.personal);
+  $('#goal-count').textContent=String(totals.goals);
   const all=totals.benchmark+totals.personal+totals.goals;
   $('#nav-count').textContent=all;$('#nav-count').hidden=all===0;
 }
