@@ -6,19 +6,19 @@
     <meta name="theme-color" content="#f6f7f2">
     <meta name="description" content="Find challenges, set goals, and track the skills you learn.">
     <title>Better than average</title>
-    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="./assets/favicon.svg?v=greater-than" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';</script>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles.css?v=greater-than">
     <script type="module" src="./app.js"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to challenges</a>
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="#explore" aria-label="Better than average home"><span class="brand-mark" aria-hidden="true">b/a<span>✳</span></span><span class="brand-name">better than<br>average<span class="brand-dot">.</span></span></a>
+        <a class="brand" href="#explore" aria-label="Better than average home"><span class="brand-mark" aria-hidden="true"><span class="brand-symbol"></span></span><span class="brand-name">better than<br>average</span></a>
         <nav class="main-nav" aria-label="Main navigation">
           <a href="#explore" data-nav="explore" class="nav-link active">Explore</a>
           <a href="#passport" data-nav="passport" class="nav-link">My passport <span id="nav-count" class="nav-count" hidden>0</span></a>
@@ -39,7 +39,7 @@
           <div class="hero-actions"><a class="button button-primary" href="#main">Explore challenges <span aria-hidden="true">→</span></a><button class="button button-quiet" type="button" data-action="surprise"><span data-icon="shuffle"></span> Surprise me</button></div>
         </div>
         <div class="hero-art" aria-hidden="true">
-          <div class="passport-cover"><div class="cover-top">SKILL PASSPORT</div><span class="cover-title">THINGS<br>YOU CAN<br>DO.</span><div class="cover-burst">✳</div><div class="cover-bottom">BETTER THAN AVERAGE</div></div>
+          <div class="passport-cover"><div class="cover-top">SKILL PASSPORT</div><span class="cover-title">THINGS<br>YOU CAN<br>DO.</span><div class="cover-mark"><span class="brand-symbol"></span></div><div class="cover-bottom">BETTER THAN AVERAGE</div></div>
           <div class="floating-stamp stamp-music"><span>♪</span><small>MUSIC</small></div>
           <div class="floating-stamp stamp-cube"><span>▦</span><small>PUZZLES</small></div>
         </div>
@@ -68,7 +68,7 @@
         </section>
       </main>
 
-      <footer class="site-footer"><a class="footer-brand" href="#explore">better than average<span>✳</span></a><button type="button" class="text-button" data-action="about">How it works</button></footer>
+      <footer class="site-footer"><a class="footer-brand" href="#explore"><span class="footer-mark" aria-hidden="true"><span class="brand-symbol"></span></span>better than average</a><button type="button" class="text-button" data-action="about">How it works</button></footer>
     </div>
 
     <dialog id="challenge-dialog" class="app-dialog detail-dialog" aria-labelledby="detail-title"><div id="detail-content"></div></dialog>
