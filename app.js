@@ -1,5 +1,6 @@
 import {categories, challenges as initialChallenges} from './data.js';
 import {createState, counts, filterChallenges, makeCustomChallenge, recordAttempt, resultLabel, targetLabel, toggleGoal} from './model.js';
+import {createPassport} from './passport.js';
 
 const $ = (selector, scope=document) => scope.querySelector(selector);
 const $$ = (selector, scope=document) => [...scope.querySelectorAll(selector)];
@@ -58,6 +59,7 @@ let filters={category:'all', query:'', type:'all'};
 let currentId=null, toastTimer=null, game=null, manualTheme=false, createTemplate=null;
 const detailDialog=$('#challenge-dialog');
 const createDialog=$('#create-dialog');
+const passport=createPassport({icon, escape, resultLabel, categoryName, formatDate});
 
 function renderTheme() {
   const dark=document.documentElement.dataset.theme==='dark';
@@ -123,6 +125,7 @@ function renderExplore() {
   $$('[data-type-filter]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.typeFilter===filters.type)));
 }
 function renderPassport() {
+  passport.render(state);
   const totals=counts(state);
   $('#goals-tab-count').textContent=totals.goals;
   $('#wins-tab-count').textContent=totals.benchmark+totals.personal;
@@ -142,12 +145,15 @@ function renderStats() {
 }
 function renderAll() {renderStats();renderExplore();renderPassport();}
 function setView(next,scroll=true) {
+  const entering=next==='passport'&&(view!=='passport'||$('#passport-view').hidden);
   view=next==='passport'?'passport':'explore';
   $('#hero').hidden=view==='passport';
   $('#explore-view').hidden=view!=='explore';$('#passport-view').hidden=view!=='passport';
   $('.page-wrap').classList.toggle('passport-mode',view==='passport');
+  if(entering)passport.enter();
+  else if(view!=='passport')passport.leave();
   $$('[data-nav]').forEach(link=>{const active=link.dataset.nav===view;link.classList.toggle('active',active);if(active)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');});
-  if(scroll)requestAnimationFrame(()=>$(view==='explore'?'#hero':'#main').scrollIntoView({behavior:'smooth',block:'start'}));
+  if(scroll)requestAnimationFrame(()=>$(view==='explore'?'#hero':'#main').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}));
 }
 function navigate(next) {if(location.hash!==`#${next}`)history.pushState(null,'',`#${next}`);setView(next);}
 window.addEventListener('popstate',()=>setView(location.hash==='#passport'?'passport':'explore',false));
@@ -300,6 +306,8 @@ document.addEventListener('click',event=>{
   else if(action==='about')openDialog($('#about-dialog'));
   else if(action==='create')openCreate();
   else if(action==='passport')navigate('passport');
+  else if(action==='replay-passport')passport.enter();
+  else if(action==='preview-passport')passport.preview();
   else if(action==='explore')navigate('explore');
   else if(action==='surprise'){
     const items=state.challenges.filter(item=>!state.records.get(item.id)?.won);

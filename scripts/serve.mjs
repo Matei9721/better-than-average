@@ -6,7 +6,7 @@ const args=process.argv.slice(2);
 const root=fileURLToPath(new URL(args.includes('--dist')?'../dist/':'../',import.meta.url));
 const port=Number(process.env.PORT || 4173);
 const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2'};
-const entrypoints=new Set(['index.html','styles.css','app.js','data.js','model.js']);
+const entrypoints=new Set(['index.html','styles.css','passport.css','app.js','passport.js','data.js','model.js']);
 http.createServer(async (request,response)=>{
   try {
     let pathname=decodeURIComponent(new URL(request.url,'http://localhost').pathname).replace(/^\/better-than-average(?=\/|$)/,'');

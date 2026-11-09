@@ -2,7 +2,7 @@
 
 There are so many people on this planet. So many things to do. How many are you better than average at?
 
-A responsive, light/dark web playground for discovering challenges and collecting real-world skills. Built with HTML, CSS, and JavaScript modules. No runtime dependencies, account, backend, analytics, or persisted profile.
+A responsive, light/dark web playground for discovering challenges and collecting real-world skills. Built with HTML, CSS, and JavaScript modules. No account, backend, analytics, or persisted profile.
 
 ## Play locally
 
@@ -23,7 +23,8 @@ node scripts/serve.mjs --dist
 ## What works
 
 - 35 starter challenges: 12 study-based comparisons, 2 rank-data targets, and 21 personal targets, with category/search/type filters and random discovery.
-- Goals, optional target dates, repeated attempts, evidence links and notes, and a skill passport.
+- Goals, optional target dates, repeated attempts, evidence links and notes, and a 3D skill passport that opens on arrival.
+- Dated, interactive stamps for completed challenges, with four stamps per page, plus a clearly labelled example preview that leaves progress untouched.
 - A five-round reaction-time game with a result you can add to an attempt.
 - Custom challenges and personal variations of the starter catalogue.
 - Light and dark themes; system appearance is used initially and the header switch overrides it for the tab.
@@ -38,6 +39,8 @@ A self-reported result is not independent verification or a world percentile. Re
 Sourced wins and personal wins remain separate. Repeat successes count once per challenge; later attempts do not erase a dated achievement. Running accepts minutes:seconds, League rank uses named choices, and bounded test scores reject impossible values. Customizing a benchmark creates a personal challenge, preserving its time or rank input format. Editing an existing custom challenge resets its attempts because its rules have changed.
 
 Google Fonts supplies DM Sans and Space Grotesk, with system font fallbacks. No application data is sent to a server.
+
+The passport uses CSS 3D surfaces and a locally bundled Anime.js 4.5.0 WAAPI module (10.2 KB before compression), loaded only when needed. Its opening and stamp reveals animate full transforms and opacity, with no continuous render loop. Once the opening finishes, the pages use flat layout without transformed ancestors to keep text sharp; only the decorative stamp borders stay tilted. Reduced-motion preferences show the open passport immediately. On phones the stamp page stays at reading size, with the left page extending offscreen; the full spread keeps the same size and position when the animation ends. Wider screens show both pages. The dependency source and MIT license are in `assets/vendor/`.
 
 ## GitHub Pages
 

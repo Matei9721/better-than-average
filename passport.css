@@ -1,0 +1,150 @@
+/* The 3D scene uses a hinged, two-sided cover and real, accessible HTML pages. */
+.passport-mode .hero-layout { display: none; }
+.passport-mode { padding-top: 0; }
+.passport-mode main { padding-top: 44px; }
+.passport-heading { align-items: flex-end; margin-bottom: 30px; }
+.passport-eyebrow { color: var(--secondary); font-size: 9px; letter-spacing: 2px; font-weight: 650; margin-bottom: 10px; }
+.passport-heading h2 { font-size: clamp(32px,4vw,45px); letter-spacing: -1.7px; }
+.passport-description { color: var(--secondary); font-size: 14px; margin-top: 10px; }
+.passport-replay { gap: 7px; white-space: nowrap; margin-bottom: 3px; }
+.passport-scene { position: relative; height: clamp(440px,53vw,625px); perspective: 1800px; isolation: isolate; container-type: inline-size; }
+.passport-book { --book-closed-transform: translate(-75%,-50%); --book-open-transform: translate(-50%,-50%); width: min(820px,calc(100% - 100px)); aspect-ratio: 1.5; position: absolute; left: 50%; top: 50%; transform: var(--book-closed-transform); transform-style: preserve-3d; }
+.passport-book * { -webkit-tap-highlight-color: transparent; }
+.passport-scene.is-open .passport-book { transform: var(--book-open-transform); }
+.passport-back-cover { position: absolute; left: 50%; width: 50%; height: 100%; border-radius: 3px 14px 14px 3px; background: #233c2c; transform: translateZ(-6px); box-shadow: 3px 10px 22px #13241b24,0 1px 2px #0f1c1480; }
+.passport-paper { position: absolute; width: 50%; height: calc(100% - 9px); top: 4px; padding: 6.3%; color: #354535; background: repeating-radial-gradient(ellipse at 50% 110%,transparent 0 7px,#6f89640b 7.5px 8px,transparent 8.5px 12px),#f7f3e5; border: 1px solid #d5cfb9; overflow: hidden; }
+.passport-stamp-page { left: 50%; width: calc(50% - 5px); padding: 3.4% 3.2% 3.4% 4%; border-radius: 2px 12px 12px 2px; box-shadow: inset 12px 0 16px -13px #584c36b0,1px 1px #e5dfcb,2px 2px #c4bda5,3px 3px #eee8d6; transform: translateZ(0); display: flex; flex-direction: column; }
+.passport-stamp-page:after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,#2e211914,transparent 10%,transparent 90%,#fff8); pointer-events: none; }
+.paper-topline,.paper-bottomline { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-family: var(--heading-font); font-size: clamp(6px,.75cqw,8px); letter-spacing: 1.1px; color: #7a816e; flex-shrink: 0; }
+.paper-topline { border-bottom: 1px solid #9caa8b45; padding-bottom: 9px; }
+.paper-topline > :last-child { text-align: right; }
+.paper-bottomline { margin-top: auto; border-top: 1px solid #9caa8b45; padding-top: 8px; font-size: clamp(6px,.7cqw,7px); }
+.paper-rosette { font-size: 20px; line-height: 1; color: #8a9b77; }
+.passport-page-heading { margin: 17px 0 10px; }
+.passport-page-heading h3 { font-family: Georgia,serif; font-weight: 400; font-size: clamp(17px,2.2cqw,25px); letter-spacing: -.6px; line-height: 1.2; }
+.passport-page-heading p { font-size: 10px; color: #7a816e; margin-top: 6px; line-height: 1.5; }
+.passport-stamps { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(0,1fr)); gap: 12px 15px; padding: 10px 2px 17px; }
+.achievement-stamp { --stamp-ink: #586e48; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 0; padding: 12px 7px; border: 0; border-radius: 50%; background: transparent; color: var(--stamp-ink); text-align: center; outline-offset: 3px; }
+.achievement-stamp:before { content: ''; position: absolute; inset: 0; border: 2px solid currentColor; border-radius: inherit; transform: rotate(var(--stamp-tilt)); pointer-events: none; }
+.achievement-stamp:after { content: ''; position: absolute; inset: 5px; border: 1px dashed currentColor; border-radius: inherit; opacity: .55; transform: rotate(var(--stamp-tilt)); pointer-events: none; }
+.achievement-stamp > * { flex-shrink: 0; }
+.achievement-stamp:hover { background: #627e4a0a; }
+.achievement-stamp:focus-visible { outline: 2px solid currentColor; }
+.achievement-stamp[data-category="digital"],.achievement-stamp[data-category="outdoors"] { --stamp-ink: #49727f; }
+.achievement-stamp[data-category="play"],.achievement-stamp[data-category="music"] { --stamp-ink: #8a5c74; }
+.achievement-stamp[data-category="make"],.achievement-stamp[data-category="everyday"] { --stamp-ink: #a06841; }
+.stamp-1,.stamp-2 { border-radius: 6px; }
+.stamp-category { font-size: clamp(6px,.66cqw,7px); letter-spacing: .9px; text-transform: uppercase; margin-bottom: 5px; }
+.achievement-stamp .icon { width: clamp(19px,2.5cqw,28px); height: clamp(19px,2.5cqw,28px); margin-bottom: 3px; }
+.achievement-stamp strong { font-family: var(--heading-font); font-size: clamp(12px,1.25cqw,14px); line-height: 1.15; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; max-width: 100%; }
+.stamp-result { font-size: 10px; line-height: 1.3; margin-top: 3px; max-width: 100%; overflow-wrap: anywhere; }
+.stamp-date { font-family: monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; border-top: 1px solid currentColor; padding-top: 3px; }
+.passport-cover { position: absolute; left: 50%; width: 50%; height: 100%; transform-origin: 0 50%; transform: rotateY(0deg); transform-style: preserve-3d; }
+.is-open .passport-cover { transform: rotateY(-180deg); }
+.passport-cover-front { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding: 12% 9% 8%; border-radius: 3px 16px 16px 3px; border: 1px solid #183222; background: radial-gradient(ellipse at 75% 20%,#ffffff0c,transparent 55%),repeating-radial-gradient(circle at 0 0,#ffffff05 0 .6px,transparent .9px 3px),linear-gradient(100deg,#172e21,#2e4b37 9%,#284733 75%,#233e2b); color: #cfb77f; box-shadow: inset 3px 0 5px #0b1d19aa,inset -1px -1px 2px #e5e5b31c,7px 9px 18px #162b2229; backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: translateZ(3px); }
+.cover-stitch { position: absolute; inset: 11px 10px 11px 13px; border: 1px solid #cfb77f27; border-radius: 2px 10px 10px 2px; box-shadow: 0 0 0 3px #10291d22; pointer-events: none; }
+.cover-brand { font-family: var(--heading-font); font-size: clamp(9px,1.3cqw,14px); letter-spacing: 3px; text-align: center; text-shadow: 0 1px #0008; }
+.cover-emblem { position: relative; width: 46%; aspect-ratio: 1; margin: 7% auto 5%; }
+.cover-emblem svg { width: 100%; height: 100%; filter: drop-shadow(0 1px 0 #091d14); }
+.cover-greater { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); display: grid; place-items: center; width: 27%; height: 27%; background: #284633; font-family: var(--heading-font); font-size: clamp(25px,4.5cqw,46px); line-height: 1; font-weight: 500; }
+.cover-title { font-family: var(--heading-font); font-size: clamp(23px,3.6cqw,39px); line-height: 1.1; letter-spacing: 6px; text-shadow: 0 1px #06180c; }
+.cover-subtitle { font-size: clamp(6px,.8cqw,9px); letter-spacing: 3px; margin-top: 5px; }
+.cover-bottom { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 14px; font-size: clamp(5px,.65cqw,7px); letter-spacing: 1.5px; }
+.passport-cover-inside { position: absolute; inset: 0; border: 1px solid #183222; border-radius: 14px 3px 3px 14px; background: repeating-radial-gradient(circle at 0 0,#ffffff05 0 .6px,transparent .9px 3px),linear-gradient(90deg,#284532,#203c2a); box-shadow: inset 1px 1px 1px #bad09a30,-2px 5px 10px #13241b20; transform: rotateY(180deg) translateZ(1px); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+/* The pasted endpaper sits inside a cover board. Its inner edge meets the
+   cloth hinge; the rounded corners belong to the outside edge of the book. */
+.passport-cover-inside:after { content: ''; position: absolute; top: 2px; right: 0; bottom: 2px; width: 10px; }
+.passport-cover-inside:after { background: repeating-linear-gradient(0deg,#ddd2a91a 0 .6px,transparent .6px 2px),linear-gradient(90deg,#294832,#142c1e 65%,#294331); border-left: 1px solid #102b1d55; pointer-events: none; }
+.passport-identity { inset: 6px 10px 7px 6px; width: auto; height: auto; padding: 6.5% 8.5%; border-radius: 9px 1px 1px 9px; background: linear-gradient(90deg,#f8f4e6,#f4efdf 83%,#e9e1cb); box-shadow: inset -14px 0 18px -15px #68552b90,0 1px 1px #102c1b35; display: flex; flex-direction: column; }
+.passport-identity:before { content: ''; position: absolute; inset: 7px 8px 7px 7px; border: 1px solid #9c98742b; border-radius: 5px 0 0 5px; pointer-events: none; }
+.identity-emblem { margin: 9% 0 7%; color: #6d8057; width: 65px; height: 30px; }
+.identity-kicker { font-size: clamp(6px,.7cqw,8px); letter-spacing: 1.5px; color: #7a816e; margin-bottom: 8px; }
+.passport-identity h3 { font-family: Georgia,serif; font-size: clamp(28px,4.1cqw,45px); font-weight: 400; line-height: 1.04; letter-spacing: -1.5px; }
+.identity-description { font-size: clamp(8px,1cqw,11px); line-height: 1.7; color: #7a816e; margin-top: 13px; }
+.identity-totals { display: flex; gap: 25px; margin-top: 8%; }
+.identity-totals > div { display: flex; flex-direction: column; gap: 2px; }
+.identity-totals strong { font-family: var(--heading-font); font-size: clamp(23px,3cqw,34px); font-weight: 400; line-height: 1.2; }
+.identity-totals span { font-size: clamp(6px,.66cqw,7px); letter-spacing: 1px; color: #7a816e; }
+.identity-signature { font-family: Georgia,serif; font-size: clamp(16px,2.1cqw,24px); font-style: italic; color: #687e55; margin: auto 0 6%; padding-top: 10px; }
+.passport-machine { border-top: 1px solid #9caa8b45; padding-top: 9px; color: #7a816e; font-family: monospace; font-size: clamp(7px,1cqw,11px); line-height: 1.6; letter-spacing: 1.4px; white-space: nowrap; }
+.passport-first-stamp { grid-column: 1 / -1; grid-row: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-bottom: 5px; }
+.first-stamp-seal { width: 100px; height: 100px; border: 1px dashed #8b9e7470; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #879777; transform: rotate(-12deg); margin-bottom: 17px; }
+.first-stamp-seal .icon { width: 37px; height: 37px; margin-bottom: 9px; stroke-width: 1; }
+.first-stamp-seal span { font-size: 6px; letter-spacing: 1px; }
+.passport-first-stamp h4 { font-family: Georgia,serif; font-size: clamp(17px,2.3cqw,25px); line-height: 1.2; font-weight: 400; letter-spacing: -.5px; }
+.passport-first-stamp p { color: #7a816e; font-size: clamp(9px,1cqw,11px); line-height: 1.6; margin-top: 10px; }
+.passport-paper-link { border: 0; border-bottom: 1px solid #6e835459; padding: 3px 0; background: transparent; color: #47633b; font-size: clamp(9px,.95cqw,11px); margin-top: 13px; min-height: 30px; }
+.passport-scene-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding: 4px 2px; }
+.passport-preview { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line); font-size: 11px; }
+.passport-preview[aria-pressed="true"] { color: var(--green-ink); }
+.passport-pagination { display: flex; align-items: center; gap: 12px; }
+.passport-pagination .icon-button { width: 32px; height: 32px; }
+.passport-pagination .icon { width: 15px; height: 15px; }
+.passport-pagination [data-passport-page="previous"] .icon { transform: rotate(180deg); }
+.passport-pagination > span { color: var(--secondary); font-family: var(--heading-font); font-size: 11px; font-variant-numeric: tabular-nums; }
+.passport-session-note { color: var(--secondary); font-size: 10px; }
+.passport-collection-heading { margin-top: 24px; padding-top: 30px; border-top: 1px solid var(--line); }
+.passport-collection-heading h3 { font-size: 23px; font-weight: 500; letter-spacing: -.8px; }
+.passport-collection-heading p { color: var(--secondary); font-size: 12px; margin-top: 5px; }
+/* Retire the 3D layers after the opening. Reading text needs no transformed
+   ancestor, flipped backface or translucent ink texture over its glyphs. */
+.passport-scene.is-settled { display: grid; place-items: center; perspective: none; }
+.passport-scene.is-settled .passport-book { position: relative; inset: auto; margin: 0; transform: none; transform-style: flat; }
+.passport-scene.is-settled .passport-cover { left: 0; transform: none; transform-style: flat; }
+.passport-scene.is-settled .passport-cover-front { display: none; }
+.passport-scene.is-settled .passport-cover-inside { transform: none; backface-visibility: visible; -webkit-backface-visibility: visible; }
+.passport-scene.is-settled .passport-stamp-page,.passport-scene.is-settled .passport-back-cover { transform: none; }
+@media (max-width: 900px) and (min-width: 651px) {
+  .passport-scene { height: clamp(500px,63vw,560px); }
+  .passport-book { width: calc(100% - 50px); }
+  .identity-emblem { margin-top: 7%; margin-bottom: 6%; }
+  .passport-page-heading { margin-top: 12px; }
+  .passport-stamps { gap: 9px 10px; padding-top: 7px; }
+  .achievement-stamp { padding: 10px 5px; }
+  .stamp-category { margin-bottom: 5px; letter-spacing: .3px; }
+  .first-stamp-seal { width: 80px; height: 80px; margin-bottom: 12px; }
+}
+@media (max-width: 650px) {
+  .passport-mode main { padding-top: 30px; }
+  .passport-heading { align-items: flex-start; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+  .passport-eyebrow { font-size: 8px; letter-spacing: 1.5px; }
+  .passport-heading h2 { font-size: 34px; }
+  .passport-description { font-size: 12px; }
+  .passport-replay { padding: 5px 0; min-height: 32px; font-size: 11px; }
+  .passport-scene { height: clamp(440px,125vw,560px); overflow: hidden; perspective: 1500px; }
+  .passport-book { --mobile-book-width: min(720px,calc(200cqw - 64px)); --book-open-transform: translate(-75%,-50%); width: var(--mobile-book-width); aspect-ratio: 1.46; }
+  /* Preserve the full spread and its exact position when retiring 3D layers.
+     The left page extends offscreen; it is never hidden or resized away. */
+  .passport-scene.is-settled .passport-book { position: absolute; inset: auto; left: calc(50% - var(--mobile-book-width) * .75); top: calc(50% - var(--mobile-book-width) / 2.92); }
+  .passport-paper { padding: 6%; }
+  .passport-stamp-page { padding: 3.3% 3.3% 3.3% 4.2%; }
+  .paper-topline { font-size: 7px; letter-spacing: .6px; padding-bottom: 10px; }
+  .paper-bottomline { font-size: 6px; letter-spacing: .6px; }
+  .passport-page-heading { margin-top: 18px; margin-bottom: 8px; }
+  .passport-page-heading h3 { font-size: clamp(20px,5.5cqw,29px); }
+  .passport-page-heading p { font-size: 10px; max-width: 230px; }
+  .passport-stamps { gap: 12px; padding: 14px 0 20px; }
+  .achievement-stamp { padding: 8px 5px; }
+  .stamp-category { font-size: 6px; letter-spacing: .25px; line-height: 1.1; margin-bottom: 3px; }
+  .achievement-stamp .icon { width: 22px; height: 22px; margin-bottom: 2px; }
+  .achievement-stamp strong { font-size: clamp(11px,3cqw,13px); }
+  .stamp-result { font-size: 10px; line-height: 1.2; margin-top: 2px; }
+  .stamp-date { font-size: 9px; letter-spacing: .8px; line-height: 1.1; margin-top: 3px; padding-top: 2px; }
+  .cover-brand { font-size: 12px; letter-spacing: 2px; }
+  .cover-title { font-size: 30px; letter-spacing: 5px; }
+  .cover-subtitle { font-size: 8px; }
+  .cover-emblem { margin-top: 16%; margin-bottom: 10%; }
+  .cover-greater { font-size: 35px; }
+  .cover-bottom { font-size: 6px; }
+  .first-stamp-seal { width: 100px; height: 100px; }
+  .passport-first-stamp h4 { font-size: 24px; }
+  .passport-first-stamp p { font-size: 11px; }
+  .passport-paper-link { font-size: 10px; min-height: 38px; }
+  .passport-scene-toolbar { flex-wrap: wrap; gap: 0 12px; padding: 8px 0; }
+  .passport-preview { min-height: 36px; }
+  .passport-session-note { flex-basis: 100%; font-size: 9px; }
+  .passport-collection-heading { margin-top: 16px; padding-top: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .passport-book { --book-open-transform: translate(-50%,-50%); }
+}

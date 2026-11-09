@@ -11,7 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';</script>
-    <link rel="stylesheet" href="./styles.css?v=study-cards">
+    <link rel="stylesheet" href="./styles.css?v=passport-3d">
+    <link rel="stylesheet" href="./passport.css?v=passport-3d">
     <script type="module" src="./app.js"></script>
   </head>
   <body>
@@ -58,7 +59,40 @@
         </section>
 
         <section id="passport-view" aria-labelledby="passport-title" hidden>
-          <div class="section-heading"><h2 id="passport-title">Your skill passport</h2></div>
+          <div class="section-heading passport-heading"><div><p class="passport-eyebrow">A RECORD OF LITTLE VICTORIES</p><h2 id="passport-title">Your skill passport</h2><p class="passport-description">Go places. Try things. Collect a little proof.</p></div><button class="text-button passport-replay" type="button" data-action="replay-passport"><span data-icon="rotate"></span> Replay opening</button></div>
+          <div id="passport-experience" class="passport-experience">
+            <div class="passport-scene" id="passport-scene" aria-label="Animated skill passport">
+              <div class="passport-book" id="passport-book">
+                <div class="passport-back-cover" aria-hidden="true"></div>
+                <section class="passport-paper passport-stamp-page" id="passport-stamp-page" aria-label="Collected achievement stamps" inert>
+                  <div class="paper-topline"><span>VISAS FOR A CURIOUS LIFE</span><span id="passport-page-number">01</span></div>
+                  <div class="passport-page-heading"><h3>The places you’ve grown.</h3><p id="passport-stamp-subtitle">Every completed challenge leaves a mark.</p></div>
+                  <div class="passport-stamps" id="passport-stamps"></div>
+                  <div class="paper-bottomline"><span>KEEP GOING. KEEP GROWING.</span><span class="paper-rosette" aria-hidden="true">✳</span></div>
+                </section>
+                <div class="passport-cover" id="passport-cover">
+                  <div class="passport-cover-front" id="passport-cover-front" aria-hidden="true">
+                    <div class="cover-stitch"></div><div class="cover-brand">BETTER THAN AVERAGE</div>
+                    <div class="cover-emblem"><svg viewBox="0 0 160 160" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="80" cy="80" r="64" stroke-width="1"/><circle cx="80" cy="80" r="57" stroke-width=".5"/><circle cx="80" cy="80" r="40" stroke-width="1.2"/><ellipse cx="80" cy="80" rx="17" ry="40"/><path d="M40 80h80M46 60h68M46 100h68M80 40v80"/><path d="m80 7 3 7-3 7-3-7ZM80 139l3 7-3 7-3-7ZM7 80l7-3 7 3-7 3ZM139 80l7-3 7 3-7 3Z" fill="currentColor" stroke="none"/></svg><span class="cover-greater">&gt;</span></div>
+                    <div class="cover-title">PASSPORT</div><div class="cover-subtitle">TO A LITTLE MORE</div>
+                    <div class="cover-bottom"><span>EST. WHENEVER YOU START</span><svg width="27" height="18" viewBox="0 0 27 18" fill="none" stroke="currentColor" aria-hidden="true"><rect x="1" y="1" width="25" height="16" rx="2"/><circle cx="13.5" cy="9" r="5"/><path d="M1 9h7.5m10 0H26"/></svg></div>
+                  </div>
+                  <div class="passport-cover-inside">
+                    <section class="passport-paper passport-identity" id="passport-identity" aria-label="Your passport summary" inert>
+                      <div class="paper-topline"><span>BETTER THAN AVERAGE</span><span>PERSONAL EDITION</span></div>
+                      <div class="identity-emblem" aria-hidden="true"><span class="brand-symbol"></span></div>
+                      <p class="identity-kicker">THE ART OF GIVING IT A GO</p><h3>Made of<br>small victories.</h3><p class="identity-description">Not everywhere you go is a place.<br>Some journeys are things you learn.</p>
+                      <div class="identity-totals"><div><strong id="passport-total-stamps">00</strong><span>STAMPS COLLECTED</span></div><div><strong id="passport-total-categories">00</strong><span>WORLDS EXPLORED</span></div></div>
+                      <div class="identity-signature">Stay curious.</div>
+                      <div class="passport-machine" aria-hidden="true">P&lt;BTA&lt;&lt;A&lt;LITTLE&lt;BETTER&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>KEEP&lt;TRYING&lt;&lt;KEEP&lt;GOING&lt;&lt;&lt;&lt;&lt;&lt;</div>
+                    </section>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="passport-scene-toolbar"><button class="text-button passport-preview" type="button" data-action="preview-passport" aria-pressed="false">Preview example stamps</button><div class="passport-pagination" id="passport-pagination" hidden><button class="icon-button" type="button" data-passport-page="previous" aria-label="Previous stamp page"><span data-icon="chevron"></span></button><span id="passport-page-status" aria-live="polite"></span><button class="icon-button" type="button" data-passport-page="next" aria-label="Next stamp page"><span data-icon="chevron"></span></button></div><p class="passport-session-note">Yours for this visit. Progress resets on refresh.</p></div>
+          </div>
+          <div class="passport-collection-heading"><h3>Your challenges</h3><p>Keep the next little victory in sight.</p></div>
           <div class="passport-toolbar"><div class="segmented" role="group" aria-label="Passport view"><button class="selected" type="button" data-passport-tab="goals" aria-pressed="true">Goals <span id="goals-tab-count">0</span></button><button type="button" data-passport-tab="wins" aria-pressed="false">Collected <span id="wins-tab-count">0</span></button></div><button class="text-button" type="button" data-action="reset">Reset progress <span data-icon="rotate"></span></button></div>
           <div id="passport-grid" class="challenge-grid"></div>
           <div id="passport-empty" class="empty-state"></div>
