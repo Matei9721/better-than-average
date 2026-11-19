@@ -9,21 +9,21 @@
   --green: #e9efdb; --green-ink: #49612f; --peach: #f6e8d9; --peach-ink: #8c5b3a;
   --lavender: #eeeaf5; --lavender-ink: #76618f; --blue: #e5edf0; --blue-ink: #466a78;
   --pink: #f3e7e8; --pink-ink: #925e6b; --yellow: #f3efda; --yellow-ink: #8c7b36;
-  --shadow: 0 12px 32px #283a2012; --modal-shadow: 0 25px 100px #111a2340;
+  --shadow: 0 12px 32px #283a2012; --modal-shadow: 0 25px 100px #111a2340; --backdrop: #101b1680;
   --body-font: 'DM Sans', sans-serif; --heading-font: 'Space Grotesk', sans-serif;
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --page: #141a16; --surface: #1c241e; --surface-hover: #222d24;
-  --ink: #ecf0e5; --secondary: #a3af9e; --faint: #9aa793;
-  --line: #354132; --soft: #252f25; --accent: #d5ef83;
-  --accent-ink: #25351b; --forest: #20382a; --forest-ink: #f1f6e8; --brand: #d5ef83;
-  --passport: #1d3024; --passport-ink: #f1f6e8; --passport-muted: #bac9b2; --passport-line: #ffffff26;
-  --button: #d5ef83; --button-ink: #25351b;
-  --green: #2b3c27; --green-ink: #bdd299; --peach: #403124; --peach-ink: #e0b68e;
-  --lavender: #332e40; --lavender-ink: #c4afd9; --blue: #263941; --blue-ink: #a3c9d7;
-  --pink: #402e34; --pink-ink: #d6a6b1; --yellow: #3b3826; --yellow-ink: #d5c580;
-  --shadow: 0 12px 32px #0002; --modal-shadow: 0 25px 100px #0008;
+  --page: #18191b; --surface: #212225; --surface-hover: #2a2c30;
+  --ink: #eceef0; --secondary: #b0b3b8; --faint: #a3a7ae;
+  --line: #3b3d42; --soft: #2b2d31; --accent: #c3dab3;
+  --accent-ink: #202b1b; --forest: #25272b; --forest-ink: #eceef0; --brand: var(--accent);
+  --passport: #25272b; --passport-ink: #eceef0; --passport-muted: #b0b3b8; --passport-line: #3b3d42;
+  --button: var(--accent); --button-ink: #202b1b;
+  --green: #29362d; --green-ink: #b6d6ad; --peach: #38302a; --peach-ink: #dfbc9e;
+  --lavender: #302d3b; --lavender-ink: #c7b9df; --blue: #28343c; --blue-ink: #abcad9;
+  --pink: #382d34; --pink-ink: #dab2c4; --yellow: #363328; --yellow-ink: #d6cb9c;
+  --shadow: 0 12px 32px #0003; --modal-shadow: 0 25px 100px #0009; --backdrop: #090a0cb3;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 110px; }
@@ -186,7 +186,7 @@ h2 { font-size: 31px; font-weight: 500; line-height: 1.2; letter-spacing: -.035e
 .empty-state p { color: var(--secondary); font-size: 13px; max-width: 380px; margin: 0 auto 20px; }
 .empty-state .button { font-size: 12px; }
 .app-dialog { background: var(--surface); color: var(--ink); border: 1px solid var(--line); padding: 30px; border-radius: 19px; box-shadow: var(--modal-shadow); width: min(540px, calc(100% - 32px)); max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; }
-.app-dialog::backdrop { background: #101b1680; backdrop-filter: blur(6px); }
+.app-dialog::backdrop { background: var(--backdrop); backdrop-filter: blur(6px); }
 .app-dialog[open] { animation: dialog-in .22s ease-out; }
 .dialog-topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; }
 .dialog-topline-close { justify-content: flex-end; margin-bottom: 10px; }

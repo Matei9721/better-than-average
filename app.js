@@ -67,7 +67,7 @@ function renderTheme() {
   button.innerHTML=icon(dark?'sun':'moon');
   button.setAttribute('aria-label',`Switch to ${dark?'light':'dark'} mode`);
   button.setAttribute('aria-pressed',String(dark));
-  $('meta[name="theme-color"]').content=dark?'#141a16':'#f6f7f2';
+  $('meta[name="theme-color"]').content=getComputedStyle(document.documentElement).getPropertyValue('--page').trim();
 }
 const systemTheme=matchMedia('(prefers-color-scheme: dark)');
 systemTheme.addEventListener('change',event=>{if(!manualTheme){document.documentElement.dataset.theme=event.matches?'dark':'light';renderTheme();}});
