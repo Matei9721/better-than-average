@@ -1,5 +1,4 @@
 /* The 3D scene uses a hinged, two-sided cover and real, accessible HTML pages. */
-.passport-mode .hero-layout { display: none; }
 .passport-mode { padding-top: 0; }
 .passport-mode main { padding-top: 44px; }
 .passport-heading { align-items: flex-end; margin-bottom: 30px; }

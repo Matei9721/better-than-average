@@ -56,7 +56,7 @@ const categoryName=id=>categories.find(category=>category.id===id)?.name || 'Per
 let state=createState(initialChallenges);
 let view='explore', passportTab='goals';
 let filters={category:'all', query:'', type:'all'};
-let currentId=null, toastTimer=null, game=null, manualTheme=false, createTemplate=null;
+let currentId=null, toastTimer=null, game=null, manualTheme=false, createTemplate=null, detailOpener=null;
 const detailDialog=$('#challenge-dialog');
 const createDialog=$('#create-dialog');
 const passport=createPassport({icon, escape, resultLabel, categoryName, formatDate});
@@ -91,7 +91,7 @@ function celebrate() {
   }
 }
 function renderCategories() {
-  $('#categories').innerHTML=categories.map(category=>`<button class="category-chip" type="button" data-category-filter="${category.id}" aria-pressed="${category.id===filters.category}">${icon(category.icon)}${category.name}</button>`).join('');
+  $('#categories').innerHTML=categories.map(category=>`<button class="category-chip" type="button" data-category-filter="${category.id}" aria-pressed="${category.id===filters.category}">${category.name}</button>`).join('');
 }
 const comparisonKind=challenge=>challenge.type!=='benchmark'?'personal':challenge.source?.kind==='rank'?'rank':'study';
 const comparisonLabel=challenge=>({study:'Study based',rank:'Rank data',personal:'Personal target'}[comparisonKind(challenge)]);
@@ -101,28 +101,34 @@ function resultInput(challenge,latest) {
   const value=latest?(duration?resultLabel(challenge,latest.value):latest.value):'';
   return `<input id="attempt-value" name="value" type="${duration?'text':'number'}" ${duration?'':`min="0" step="${challenge.integer?'1':'any'}" inputmode="${challenge.integer?'numeric':'decimal'}" ${challenge.max!==undefined?`max="${challenge.max}"`:''}`} required placeholder="${escape(duration?resultLabel(challenge,challenge.target):challenge.target)}" value="${escape(value)}">`;
 }
-function card(challenge) {
+const starterOrder=new Map(['reflexes','paper-crane','balance'].map((id,index)=>[id,index]));
+function card(challenge,{starter=false}={}) {
   const record=state.records.get(challenge.id);
   const saved=Boolean(record?.goal);
   const latest=record?.attempts.at(-1);
   const kind=comparisonKind(challenge);
-  return `<article class="challenge-card" data-category="${escape(challenge.category)}" data-comparison="${kind}">
-    <div class="card-top"><span class="challenge-icon">${icon(challenge.icon)}</span><button type="button" class="bookmark-button" data-goal="${escape(challenge.id)}" aria-label="${saved?'Remove':'Save'} ${escape(challenge.title)} ${saved?'from':'to'} goals" aria-pressed="${saved}">${icon(record?.won?'check':'bookmark')}</button></div>
-    <div class="card-labels"><span class="category-name">${categoryName(challenge.category)}</span><span class="comparison-badge comparison-${kind}">${icon(kind==='personal'?'flag':kind==='rank'?'layers':'study')}${comparisonLabel(challenge)}</span>${record?.won?'<span class="card-tag">Completed</span>':challenge.tag?`<span class="card-tag">${escape(challenge.tag)}</span>`:''}</div>
-    <h3 class="card-title"><button type="button" data-open="${escape(challenge.id)}">${escape(challenge.title)}</button></h3>
+  return `<article class="challenge-card${starter?' starter-card':''}" data-category="${escape(challenge.category)}" data-comparison="${kind}">
+    <div class="card-top"><div class="card-category"><span class="challenge-icon">${icon(challenge.icon)}</span><div class="card-labels"><span class="category-name">${categoryName(challenge.category)}</span><span class="comparison-badge comparison-${kind}">${comparisonLabel(challenge)}</span>${record?.won?'<span class="card-tag">Completed</span>':challenge.tag?`<span class="card-tag">${escape(challenge.tag)}</span>`:''}</div></div><button type="button" class="bookmark-button" data-goal="${escape(challenge.id)}" aria-label="${saved?'Remove':'Save'} ${escape(challenge.title)} ${saved?'from':'to'} goals" title="${saved?'Remove from goals':'Save to goals'}" aria-pressed="${saved}">${icon('bookmark')}</button></div>
+    <h3 class="card-title">${starter?escape(challenge.title):`<button type="button" data-open="${escape(challenge.id)}">${escape(challenge.title)}</button>`}</h3>
     <p class="card-description">${escape(challenge.description)}</p>
-    ${challenge.source?`<div class="card-comparison"><span>Compared with</span><p>${escape(challenge.source.cohort)}</p><a href="${escape(challenge.source.url)}" target="_blank" rel="noopener noreferrer">${escape(challenge.source.shortTitle||challenge.source.title)} · ${escape(challenge.source.year)} <span aria-hidden="true">↗</span></a></div>`:''}
-    <div class="card-bottom"><div><div class="card-target">${escape(targetLabel(challenge))}</div><div class="card-type">${challenge.type==='benchmark'?'Reference target':'Your own goal'}${challenge.time?` <span aria-hidden="true">·</span> ${escape(challenge.time)}`:''}</div></div><button type="button" class="card-open" data-open="${escape(challenge.id)}" aria-label="Open ${escape(challenge.title)}">${icon('chevron')}</button></div>
+    ${challenge.source?`<div class="card-comparison"><p><span>Compared with </span>${escape(challenge.source.cohort)}</p><a href="${escape(challenge.source.url)}" target="_blank" rel="noopener noreferrer">${escape(challenge.source.shortTitle||challenge.source.title)} · ${escape(challenge.source.year)} <span aria-hidden="true">↗</span></a></div>`:''}
+    <div class="card-bottom"><div>${starter?'<span class="starter-target-label">Target</span>':''}<div class="card-target">${escape(targetLabel(challenge))}</div>${challenge.time?`<div class="card-type">${starter?'About ':''}${escape(challenge.time)}</div>`:''}</div>${starter?`<button type="button" class="button button-primary starter-open" data-open="${escape(challenge.id)}" aria-label="${record?.won?'View result for':'Try'} ${escape(challenge.title)}">${record?.won?'View result':'Try it'} ${icon('chevron')}</button>`:`<button type="button" class="card-open" data-open="${escape(challenge.id)}" aria-label="Open ${escape(challenge.title)}">${icon('chevron')}</button>`}</div>
     ${latest||record?.deadline?`<div class="card-record">${icon(record?.won?'check':'clock')}<span>${record?.won?'Completed · self-reported':latest?`Last result: ${escape(resultLabel(challenge,latest.value))}`:'Saved to goals'}${record?.deadline?` · Target: ${escape(formatDate(record.deadline))}`:''}</span></div>`:''}
   </article>`;
 }
 function formatDate(value) {return new Date(value.length===10?`${value}T12:00:00`:value).toLocaleDateString(undefined,{day:'numeric',month:'short'});}
 function renderExplore() {
   const items=filterChallenges(state.challenges,filters);
+  const hasFilters=filters.category!=='all'||filters.type!=='all'||Boolean(filters.query.trim());
+  if(!hasFilters) {
+    const priority=item=>item.custom?-1:(starterOrder.get(item.id)??starterOrder.size);
+    items.sort((left,right)=>priority(left)-priority(right));
+  }
   $('#results-count').innerHTML=`<strong>${items.length}</strong> ${items.length===1?'challenge':'challenges'}`;
-  $('#challenge-grid').innerHTML=items.map(item=>card(item)).join('');
+  $('#challenge-grid').innerHTML=items.map(item=>card(item,{starter:starterOrder.has(item.id)})).join('');
   $('#no-results').hidden=items.length>0;
-  $$('[data-type-filter]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.typeFilter===filters.type)));
+  $('#clear-filters').hidden=!hasFilters||items.length===0;
+  $('#challenge-type').value=filters.type;
 }
 function renderPassport() {
   passport.render(state);
@@ -170,7 +176,14 @@ $$('dialog').forEach(dialog=>{
     if(event.clientX<bounds.left||event.clientX>bounds.right||event.clientY<bounds.top||event.clientY>bounds.bottom)dialog.close();
   });
 });
-detailDialog.addEventListener('close',()=>stopGame());
+detailDialog.addEventListener('close',()=>{
+  stopGame();
+  if($('dialog[open]')||(detailOpener?.isConnected&&detailOpener.getClientRects().length))return;
+  const grid=$(view==='passport'?'#passport-grid':'#challenge-grid');
+  const candidates=$$('[data-open]',grid).filter(button=>button.dataset.open===currentId);
+  const opener=candidates.find(button=>button.className===detailOpener?.className)||candidates[0];
+  opener?.focus({preventScroll:true});
+});
 
 function renderDetail() {
   const challenge=state.challenges.find(item=>item.id===currentId);if(!challenge)return;
@@ -209,7 +222,7 @@ function renderDetail() {
   if(challenge.game==='reaction')initGame();
   if(detailDialog.open)$('.dialog-topline button',detailDialog).focus({preventScroll:true});
 }
-function openChallenge(id) {currentId=id;renderDetail();openDialog(detailDialog);}
+function openChallenge(id,opener=document.activeElement) {detailOpener=opener;currentId=id;renderDetail();openDialog(detailDialog);}
 
 function openCreate(id='') {
   const original=state.challenges.find(item=>item.id===id);
@@ -286,22 +299,29 @@ document.addEventListener('click',event=>{
   const brand=event.target.closest('.brand,.footer-brand');
   if(brand){event.preventDefault();navigate('explore');return;}
   const open=event.target.closest('[data-open]');
-  if(open){openChallenge(open.dataset.open);return;}
+  if(open){openChallenge(open.dataset.open,open);return;}
   const goal=event.target.closest('[data-goal]');
-  if(goal){const saved=toggleGoal(state,goal.dataset.goal);renderAll();toast(saved?'Saved to goals.':'Removed from goals.');return;}
+  if(goal){
+    const id=goal.dataset.goal, grid=goal.closest('.challenge-grid');
+    const index=$$('[data-goal]',grid).indexOf(goal);
+    const saved=toggleGoal(state,id);renderAll();
+    const buttons=$$('[data-goal]',grid);
+    const next=buttons.find(button=>button.dataset.goal===id)||buttons[Math.min(index,buttons.length-1)]||$('#passport-empty button');
+    next?.focus({preventScroll:true});
+    toast(saved?'Saved to goals.':'Removed from goals.');return;
+  }
   const detailGoal=event.target.closest('[data-detail-goal]');
   if(detailGoal){const saved=toggleGoal(state,detailGoal.dataset.detailGoal);detailGoal.setAttribute('aria-pressed',String(saved));detailGoal.innerHTML=`${icon(saved?'check':'bookmark')}<span>${saved?'Saved to goals':'Save to goals'}</span>`;renderAll();toast(saved?'Saved to goals.':'Removed from goals.');return;}
   const undo=event.target.closest('[data-undo]');
   if(undo){const record=state.records.get(undo.dataset.undo);record.won=false;record.achieved=null;renderAll();renderDetail();toast('Achievement removed. Attempts kept.');return;}
   const category=event.target.closest('[data-category-filter]');
-  if(category){filters.category=category.dataset.categoryFilter;renderCategories();renderExplore();return;}
-  const type=event.target.closest('[data-type-filter]');
-  if(type){filters.type=type.dataset.typeFilter;renderExplore();return;}
+  if(category){filters.category=category.dataset.categoryFilter;renderCategories();renderExplore();$('#categories [aria-pressed="true"]').focus({preventScroll:true});return;}
   const passportButton=event.target.closest('[data-passport-tab]');
   if(passportButton){passportTab=passportButton.dataset.passportTab;renderPassport();return;}
   const customize=event.target.closest('[data-customize]');
   if(customize){openCreate(customize.dataset.customize);return;}
-  const action=event.target.closest('[data-action]')?.dataset.action;
+  const actionButton=event.target.closest('[data-action]');
+  const action=actionButton?.dataset.action;
   if(action==='theme'){manualTheme=true;document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';renderTheme();}
   else if(action==='about')openDialog($('#about-dialog'));
   else if(action==='create')openCreate();
@@ -311,9 +331,9 @@ document.addEventListener('click',event=>{
   else if(action==='explore')navigate('explore');
   else if(action==='surprise'){
     const items=state.challenges.filter(item=>!state.records.get(item.id)?.won);
-    const pool=items.length?items:state.challenges;openChallenge(pool[Math.floor(Math.random()*pool.length)].id);
+    const pool=items.length?items:state.challenges;openChallenge(pool[Math.floor(Math.random()*pool.length)].id,actionButton);
   }
-  else if(action==='clear-filters'){filters={category:'all',query:'',type:'all'};$('#search').value='';renderCategories();renderExplore();}
+  else if(action==='clear-filters'){filters={category:'all',query:'',type:'all'};$('#search').value='';renderCategories();renderExplore();$('#search').focus({preventScroll:true});}
   else if(action==='reset')openDialog($('#reset-dialog'));
   else if(action==='confirm-reset'){
     state=createState(initialChallenges);filters={category:'all',query:'',type:'all'};passportTab='goals';$('#search').value='';renderCategories();renderAll();closeDialog($('#reset-dialog'));navigate('explore');toast('Progress reset.');
@@ -321,6 +341,7 @@ document.addEventListener('click',event=>{
   else if(action==='use-reaction'&&game?.average){$('#attempt-value').value=game.average;$('#attempt-value').focus();toast('Result added to your attempt.');}
 });
 $('#search').addEventListener('input',event=>{filters.query=event.target.value;renderExplore();});
+$('#challenge-type').addEventListener('change',event=>{filters.type=event.target.value;renderExplore();});
 document.addEventListener('submit',event=>{
   if(event.target.id==='attempt-form') {
     event.preventDefault();

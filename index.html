@@ -23,37 +23,26 @@
         <nav class="main-nav" aria-label="Main navigation">
           <a href="#explore" data-nav="explore" class="nav-link active">Explore</a>
           <a href="#passport" data-nav="passport" class="nav-link">My passport <span id="nav-count" class="nav-count" hidden>0</span></a>
-          <button class="nav-link nav-about" type="button" data-action="about">How it works</button>
         </nav>
         <div class="header-actions">
           <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" data-action="theme"></button>
-          <button class="button button-small header-create" type="button" data-action="create" aria-label="Add challenge"><span aria-hidden="true">＋</span><span class="create-label">Add challenge</span></button>
         </div>
       </div>
     </header>
 
     <div class="page-wrap">
-      <div class="hero-layout">
       <section class="hero" id="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <h1 id="hero-title">A little better.<br>At a lot of things.</h1>
-          <p class="hero-description">There are so many people on this planet. So many things to do. How many are you better than average at?</p>
-          <div class="hero-actions"><a class="button button-primary" href="#main">Explore challenges <span aria-hidden="true">→</span></a><button class="button button-quiet" type="button" data-action="surprise"><span data-icon="shuffle"></span> Surprise me</button></div>
+        <h1 id="hero-title">A little better. <span>At a lot of things.</span></h1>
+        <div class="hero-bottom">
+          <p class="hero-description">There are so many people on this planet. So many things to do. <span class="hero-question">How many are you better than average at?</span></p>
+          <button class="button button-small hero-random" type="button" data-action="surprise"><span data-icon="shuffle"></span> Pick a random challenge</button>
         </div>
       </section>
 
-      <section class="passport-strip" aria-label="Your progress">
-        <div class="strip-intro"><span class="passport-mark" aria-hidden="true"><span class="brand-symbol"></span></span><strong>Your passport</strong></div>
-        <div class="strip-stats"><div class="stat"><span id="benchmark-count">0</span><span>above average <button type="button" class="tiny-info" aria-label="About comparisons" data-action="about">i</button></span></div><div class="stat"><span id="personal-count">0</span><span>personal wins</span></div><div class="stat"><span id="goal-count">0</span><span>goals</span></div></div>
-        <button class="strip-link" type="button" data-action="passport">Open passport <span aria-hidden="true">→</span></button>
-      </section>
-      </div>
-
       <main id="main" tabindex="-1">
         <section id="explore-view" aria-labelledby="explore-title">
-          <div class="section-heading"><h2 id="explore-title">Explore challenges</h2></div>
-          <div class="explore-toolbar"><div class="category-list" id="categories" role="group" aria-label="Filter by category"></div><label class="search-box"><span data-icon="search"></span><span class="sr-only">Search challenges</span><input id="search" type="search" placeholder="Search challenges" autocomplete="off"></label></div>
-          <div class="results-bar"><div class="type-filters" role="group" aria-label="Challenge type"><button type="button" data-type-filter="all" aria-pressed="true">All</button><button type="button" data-type-filter="study" aria-pressed="false">Study based</button><button type="button" data-type-filter="rank" aria-pressed="false">Rank data</button><button type="button" data-type-filter="personal" aria-pressed="false">Personal targets</button></div><p id="results-count" aria-live="polite"></p></div>
+          <div class="section-heading explore-heading"><div class="explore-title"><h2 id="explore-title">Explore challenges</h2><div class="results-summary"><p id="results-count" aria-live="polite"></p><button id="clear-filters" class="text-button filter-clear" type="button" data-action="clear-filters" hidden>Clear filters</button></div></div><div class="explore-actions"><button class="button button-small button-outline" type="button" data-action="create">Add challenge</button></div></div>
+          <div class="explore-toolbar"><div class="category-list" id="categories" role="group" aria-label="Filter by category"></div><div class="catalogue-search"><label class="search-box"><span data-icon="search"></span><span class="sr-only">Search challenges</span><input id="search" type="search" placeholder="Search" autocomplete="off"></label><label class="type-select"><span class="sr-only">Challenge type</span><select id="challenge-type"><option value="all">All types</option><option value="study">Study based</option><option value="rank">Rank data</option><option value="personal">Personal targets</option></select></label></div></div>
           <div id="challenge-grid" class="challenge-grid"></div>
           <div id="no-results" class="empty-state" hidden><h3>No challenges found</h3><p>Try a different search or add your own challenge.</p><button type="button" class="button button-primary" data-action="clear-filters">Clear filters</button><button type="button" class="button button-quiet" data-action="create">Add challenge</button></div>
         </section>
@@ -92,6 +81,7 @@
             </div>
             <div class="passport-scene-toolbar"><button class="text-button passport-preview" type="button" data-action="preview-passport" aria-pressed="false">Preview example stamps</button><div class="passport-pagination" id="passport-pagination" hidden><button class="icon-button" type="button" data-passport-page="previous" aria-label="Previous stamp page"><span data-icon="chevron"></span></button><span id="passport-page-status" aria-live="polite"></span><button class="icon-button" type="button" data-passport-page="next" aria-label="Next stamp page"><span data-icon="chevron"></span></button></div><p class="passport-session-note">Yours for this visit. Progress resets on refresh.</p></div>
           </div>
+          <section class="passport-totals" aria-label="Your progress"><div class="stat"><span id="benchmark-count">0</span><span>above average <button type="button" class="tiny-info" aria-label="About comparisons" data-action="about">i</button></span></div><div class="stat"><span id="personal-count">0</span><span>personal wins</span></div><div class="stat"><span id="goal-count">0</span><span>goals</span></div></section>
           <div class="passport-collection-heading"><h3>Your challenges</h3><p>Keep the next little victory in sight.</p></div>
           <div class="passport-toolbar"><div class="segmented" role="group" aria-label="Passport view"><button class="selected" type="button" data-passport-tab="goals" aria-pressed="true">Goals <span id="goals-tab-count">0</span></button><button type="button" data-passport-tab="wins" aria-pressed="false">Collected <span id="wins-tab-count">0</span></button></div><button class="text-button" type="button" data-action="reset">Reset progress <span data-icon="rotate"></span></button></div>
           <div id="passport-grid" class="challenge-grid"></div>
