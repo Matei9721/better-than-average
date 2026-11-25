@@ -326,8 +326,6 @@ document.addEventListener('click',event=>{
   else if(action==='about')openDialog($('#about-dialog'));
   else if(action==='create')openCreate();
   else if(action==='passport')navigate('passport');
-  else if(action==='replay-passport')passport.enter();
-  else if(action==='preview-passport')passport.preview();
   else if(action==='explore')navigate('explore');
   else if(action==='surprise'){
     const items=state.challenges.filter(item=>!state.records.get(item.id)?.won);

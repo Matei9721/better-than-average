@@ -23,8 +23,8 @@ node scripts/serve.mjs --dist
 ## What works
 
 - 35 starter challenges: 12 study-based comparisons, 2 rank-data targets, and 21 personal targets, with category/search/type filters and random discovery.
-- Goals, optional target dates, repeated attempts, evidence links and notes, and a 3D skill passport that opens on arrival.
-- Dated, interactive stamps for completed challenges, with four stamps per page, plus a clearly labelled example preview that leaves progress untouched.
+- Goals, optional target dates, repeated attempts, evidence links and notes, and a 3D skill passport that opens automatically on arrival. Passport controls focus on the stamps and challenges; comparison details and session limits are in “How it works”.
+- Dated, interactive stamps for completed challenges, with four stamps per page.
 - A five-round reaction-time game with a result you can add to an attempt.
 - Custom challenges and personal variations of the starter catalogue.
 - Light and dark themes; system appearance is used initially and the header switch overrides it for the tab.

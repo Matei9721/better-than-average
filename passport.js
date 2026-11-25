@@ -6,7 +6,7 @@ export function createPassport({icon, escape, resultLabel, categoryName, formatD
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   const compact=matchMedia('(max-width: 650px)');
   const animations=new Set();
-  let currentState, sheet=0, examples=false, active=false, generation=0, waapi, lastWinCount=0;
+  let currentState, sheet=0, active=false, generation=0, waapi, lastWinCount=0;
   let library;
   const pad=value=>String(value).padStart(2,'0');
   const angles=[-7,5,4,-5];
@@ -85,46 +85,42 @@ export function createPassport({icon, escape, resultLabel, categoryName, formatD
   }
   function leave() {stop();active=false;scene.classList.remove('is-open');accessible(false);}
   function entries() {
-    if(examples) {
-      return ['bench-press','juggle','typing','signature-dish'].map(id=>currentState.challenges.find(challenge=>challenge.id===id)).filter(Boolean).map(challenge=>({challenge,example:true}));
-    }
     return currentState.challenges.filter(challenge=>currentState.records.get(challenge.id)?.won).map(challenge=>({challenge,record:currentState.records.get(challenge.id)})).sort((a,b)=>new Date(b.record.achieved)-new Date(a.record.achieved));
   }
-  function stampMarkup({challenge,record,example},index) {
-    const best=record?.attempts.length?(challenge.direction==='under'?Math.min:Math.max)(...record.attempts.map(attempt=>attempt.value)):null;
-    const result=example?'EXAMPLE STAMP':resultLabel(challenge,best);
-    const date=example?'KEEP GOING':formatDate(record.achieved);
-    return `<button class="achievement-stamp stamp-${index%4}" type="button" data-category="${escape(challenge.category)}" style="--stamp-tilt:${angles[index%4]}deg" data-open="${escape(challenge.id)}" aria-label="${example?'Example: ':''}${escape(challenge.title)}${example?'':`, ${escape(result)}, completed ${escape(date)}`}. Open challenge."><span class="stamp-category">${escape(categoryName(challenge.category))} · ${challenge.type==='benchmark'?'REFERENCE':'PERSONAL'}</span>${icon(challenge.icon)}<strong title="${escape(challenge.title)}">${escape(challenge.title)}</strong><span class="stamp-result">${escape(result)}</span><span class="stamp-date">${escape(date)}</span></button>`;
+  function stampMarkup({challenge,record},index) {
+    const best=(challenge.direction==='under'?Math.min:Math.max)(...record.attempts.map(attempt=>attempt.value));
+    const result=resultLabel(challenge,best);
+    const date=formatDate(record.achieved);
+    return `<button class="achievement-stamp stamp-${index%4}" type="button" data-category="${escape(challenge.category)}" style="--stamp-tilt:${angles[index%4]}deg" data-open="${escape(challenge.id)}" aria-label="${escape(challenge.title)}, ${escape(result)}, completed ${escape(date)}. Open challenge."><span class="stamp-category">${escape(categoryName(challenge.category))} · ${challenge.type==='benchmark'?'REFERENCE':'PERSONAL'}</span>${icon(challenge.icon)}<strong title="${escape(challenge.title)}">${escape(challenge.title)}</strong><span class="stamp-result">${escape(result)}</span><span class="stamp-date">${escape(date)}</span></button>`;
   }
   function render(state=currentState) {
     currentState=state;
     const actual=state.challenges.filter(challenge=>state.records.get(challenge.id)?.won);
-    if(actual.length!==lastWinCount){examples=false;sheet=0;}
+    if(actual.length!==lastWinCount)sheet=0;
     lastWinCount=actual.length;
     const items=entries(), pages=Math.max(1,Math.ceil(items.length/4));
     sheet=Math.min(sheet,pages-1);
     $('#passport-total-stamps').textContent=pad(actual.length);
     $('#passport-total-categories').textContent=pad(new Set(actual.map(challenge=>challenge.category)).size);
     $('#passport-page-number').textContent=pad(sheet+1);
-    $('#passport-stamp-subtitle').textContent=examples?'Example stamps · a preview of what’s to come.':items.length?'Your achievements, self-reported and well earned.':'Every completed challenge leaves a mark.';
-    stamps.innerHTML=items.length?items.slice(sheet*4,sheet*4+4).map(stampMarkup).join(''):`<div class="passport-first-stamp"><div class="first-stamp-seal" aria-hidden="true">${icon('compass')}<span>SO MUCH STILL TO TRY</span></div><h4>A blank page.<br>A world of possibilities.</h4><p>Complete your first challenge<br>to collect your first stamp.</p><button class="passport-paper-link" type="button" data-action="explore">Find your first challenge <span aria-hidden="true">↗</span></button></div>`;
+    $('#passport-stamp-subtitle').textContent=items.length?'Select a stamp to see the result.':'One stamp for each completed challenge.';
+    stamps.innerHTML=items.length?items.slice(sheet*4,sheet*4+4).map(stampMarkup).join(''):`<div class="passport-first-stamp"><div class="first-stamp-seal" aria-hidden="true">${icon('compass')}</div><h4>No stamps yet</h4><p>Complete a challenge to add your first stamp.</p><button class="passport-paper-link" type="button" data-action="explore">Explore challenges ${icon('chevron')}</button></div>`;
     const pagination=$('#passport-pagination');pagination.hidden=pages===1;
     $('#passport-page-status').textContent=`${sheet+1} / ${pages}`;
     $('[data-passport-page="previous"]').disabled=sheet===0;
     $('[data-passport-page="next"]').disabled=sheet===pages-1;
-    const preview=$('[data-action="preview-passport"]');
-    preview.textContent=examples?'Back to my stamps':'Preview example stamps';
-    preview.setAttribute('aria-pressed',String(examples));
-    scene.classList.toggle('is-preview',examples);
   }
   $('#passport-experience').addEventListener('click',event=>{
     const button=event.target.closest('[data-passport-page]');
-    if(button){sheet+=button.dataset.passportPage==='next'?1:-1;render();revealStamps();}
+    if(button){
+      sheet+=button.dataset.passportPage==='next'?1:-1;render();revealStamps();
+      if(button.disabled)$(`[data-passport-page="${sheet===0?'next':'previous'}"]`).focus({preventScroll:true});
+    }
   });
   // Changing viewport or motion preferences during an opening must not leave a
   // committed desktop transform or an inaccessible, half-open cover behind.
   function finishForPreference() {if(active){stop();settle();}}
   reduced.addEventListener('change',finishForPreference);
   compact.addEventListener('change',finishForPreference);
-  return {render,enter,leave,preview(){examples=!examples;sheet=0;render();revealStamps();}};
+  return {render,enter,leave};
 }

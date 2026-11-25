@@ -46,7 +46,7 @@ Categories currently span Move, Mind, Make, Everyday, Play, Digital, Music, and 
 - Repeat successes count once per challenge. A later unsuccessful attempt does not erase an earned achievement.
 - Customizing a sourced challenge creates a personal target without attributing its changed rules to the original source. Editing an existing custom challenge clears its attempts because its rules changed.
 - The browser reaction game is a five-round personal target. It does not claim a research-backed population comparison.
-- The passport includes example stamps that are explicitly labelled and do not alter progress. The interface supports light/dark appearance and reduced-motion preferences.
+- The passport shows stamps earned from completed challenges. The interface supports light/dark appearance and reduced-motion preferences.
 
 ### Confirmed long-term direction
 
